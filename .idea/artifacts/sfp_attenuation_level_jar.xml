@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="sfp_attenuation_level:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/sfp_attenuation_level_jar</output-path>
+    <root id="archive" name="sfp_attenuation_level.jar">
+      <element id="module-output" name="sfp_attenuation_level" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/net/sf/opencsv/opencsv/2.3/opencsv-2.3.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

@@ -1,0 +1,15 @@
+.check-box {
+    -fx-font-size: 14px;
+    -fx-font-family: Arial;
+    -fx-alignment: center-right;
+    -fx-text-alignment: center;
+    -fx-content-display: center;
+}
+
+.button {
+    -fx-font-size: 14px;
+    -fx-font-family: Arial;
+    -fx-alignment: center-right;
+    -fx-text-alignment: center;
+    -fx-content-display: center;
+}
