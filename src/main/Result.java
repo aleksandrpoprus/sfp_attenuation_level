@@ -1,4 +1,4 @@
-package ru.level.attenuation.sfp;
+package main;
 
 public class Result {
 

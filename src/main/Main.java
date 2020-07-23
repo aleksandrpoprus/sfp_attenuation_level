@@ -1,4 +1,4 @@
-package ru.level.attenuation.sfp;
+package main;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;

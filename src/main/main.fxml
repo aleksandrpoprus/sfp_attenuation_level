@@ -8,7 +8,7 @@
 <VBox fx:id="vBox" stylesheets="@res/style/style.css"
       xmlns="http://javafx.com/javafx/10.0.2-internal"
       xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="ru.level.attenuation.sfp.Controller">
+      fx:controller="main.Controller">
 
     <CheckBox fx:id="check_box" styleClass="check-box" text="оставить только последний результат">
         <VBox.margin>

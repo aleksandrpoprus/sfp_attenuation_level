@@ -1,4 +1,4 @@
-package ru.level.attenuation.sfp.classes;
+package main.classes;
 
 import java.util.ArrayList;
 

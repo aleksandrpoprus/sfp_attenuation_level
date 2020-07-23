@@ -1,10 +1,10 @@
-package ru.level.attenuation.sfp;
+package main;
 
 import au.com.bytecode.opencsv.CSVReader;
-import ru.level.attenuation.sfp.classes.BBU_Port;
-import ru.level.attenuation.sfp.classes.DSP_SFP;
-import ru.level.attenuation.sfp.classes.LST_RRUCHAIN;
-import ru.level.attenuation.sfp.classes.RRU;
+import main.classes.BBU_Port;
+import main.classes.DSP_SFP;
+import main.classes.LST_RRUCHAIN;
+import main.classes.RRU;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;

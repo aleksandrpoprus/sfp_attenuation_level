@@ -1,4 +1,4 @@
-package ru.level.attenuation.sfp.classes;
+package main.classes;
 
 public class BBU_Port extends BTS {
 
