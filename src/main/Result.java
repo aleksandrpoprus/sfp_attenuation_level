@@ -68,7 +68,7 @@ public class Result {
         if (difference1 > 4 || difference1 < -4) {
             difference1 = (difference1 < 0) ? difference1 * -1 : difference1;
             s1 = String.format("<p>" +
-                            "BBU(%d %d) " +
+                            "BBU(%d, %d) " +
                             "Tx= %.2f dbm --" +
                             "(<samp1 data-tooltip=\"Превышение уровня затухания! %.2f > 4 dbm\">%.2f</samp1> dbm)--> " +
                             "Rx= %.2f dbm " +
@@ -84,7 +84,7 @@ public class Result {
         } else {
             difference1 = (difference1 < 0) ? difference1 * -1 : difference1;
             s1 = String.format("<p>" +
-                            "BBU(%d %d) " +
+                            "BBU(%d, %d) " +
                             "Tx= %.2f dbm --" +
                             "(<samp0>%.2f</samp0> dbm)--> " +
                             "Rx= %.2f dbm " +
@@ -100,7 +100,7 @@ public class Result {
         if (difference2 > 4 || difference2 < -4) {
             difference2 = (difference2 < 0) ? difference2 * -1 : difference2;
             s2 = String.format("<p>" +
-                            "BBU(%d %d) " +
+                            "BBU(%d, %d) " +
                             "Rx= %.2f dbm <--" +
                             "(<samp1 data-tooltip=\"Превышение уровня затухания! %.2f > 4 dbm\">%.2f</samp1> dbm)-- " +
                             "Tx= %.2f dbm " +
@@ -116,7 +116,7 @@ public class Result {
         } else {
             difference2 = (difference2 < 0) ? difference2 * -1 : difference2;
             s2 = String.format("<p>" +
-                            "BBU(%d %d) " +
+                            "BBU(%d, %d) " +
                             "Rx= %.2f dbm <--" +
                             "(<samp0>%.2f</samp0> dbm)-- " +
                             "Tx= %.2f dbm " +
@@ -134,7 +134,7 @@ public class Result {
 
         if(sfp_BBU_Speed != sfp_RRU_Speed && (sfp_BBU_Mode.equals(SM) && sfp_RRU_Mode.equals(SM))) {
             s3 = String.format("<p>" +
-                            "BBU(%d %d) - " +
+                            "BBU(%d, %d) - " +
                             "<samp data-tooltip=\"Manufacturer name\">MF: %s</samp>; " +
                             "<samp data-tooltip=\"Transmission code rate\">TCR</samp>: " +
                             "<samp data-tooltip=\"В RRU sfp c инным TCR\"><samp1>%.1f</samp1></samp> Gbit/s; " +
@@ -161,7 +161,7 @@ public class Result {
                     warningRed);
         } else if(sfp_BBU_Speed != sfp_RRU_Speed && (sfp_BBU_Mode.equals(SM) && sfp_RRU_Mode.equals(MM) || sfp_BBU_Mode.equals(MM) && sfp_RRU_Mode.equals(SM))){
             s3 = String.format("<p>" +
-                            "BBU(%d %d) - " +
+                            "BBU(%d, %d) - " +
                             "<samp data-tooltip=\"Manufacturer name\">MF: %s</samp>; " +
                             "<samp data-tooltip=\"Transmission code rate\">TCR</samp>: " +
                             "<samp data-tooltip=\"Разные TCR и MODE(требуется уточнение)\"><samp1>%.1f</samp1></samp> Gbit/s; " +
@@ -187,7 +187,7 @@ public class Result {
                     sfp_RRU_Mode,
                     warningYellow);
         } else {
-            s3 = String.format("<p>BBU(%d %d) - " +
+            s3 = String.format("<p>BBU(%d, %d) - " +
                             "<samp data-tooltip=\"Manufacturer name\">MF: %s</samp>;" +
                             "<samp data-tooltip=\"Transmission code rate\">TCR</samp>: " +
                             "%.1f Gbit/s; " +
