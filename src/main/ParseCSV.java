@@ -5,6 +5,7 @@ import main.classes.BBU_Port;
 import main.classes.DSP_SFP;
 import main.classes.LST_RRUCHAIN;
 import main.classes.RRU;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -20,10 +21,11 @@ class ParseCSV {
     private static final String REGEX_HEAD = "^(?:\\[BTS)\\w+]";
     private static final String REGEX_DSP_SFP_BBU_SIDE = "^[\\[](?:[0],[ ]+(?:[0]),[ ]+[0-5],[ ]+[C-R]+,[ ]+[0-5],[ ]+(?:[\\w]+,[ ]+|[A-z]+ [A-z,.]+,[ ]+){22}(-?\\d+,[ ]+){6})[]]";
     private static final String REGEX_DSP_SFP_RRU_SIDE = "^[\\[](?:[0],[ ]+(?:[\\d][0-9]|[\\d][0-8][0-5]),[ ]+[0-5],[ ]+[C-R]+,[ ]+[0-5],[ ]+(?:[\\w]+,[ ]+|[A-z]+ [A-z,.]+,[ ]+){22}(-?\\d+,[ ]+){6})[]]";
-    private static final String REGEX_LST_RRUCHAIN = "^[\\[](?:[\\d][0-9]|[\\d][0-8][0-5]),[ ]+(?:[\\w]+,[ ]+){2}(?:[\\d],[ ]+){5}(?:(?:[\\w]+|[\\w]+ [\\w]+),[ ]+){13}[0-9,A-Z,\\-]+,[ ]+[\\w]+,[ ]+[0-9,.,:,A-Z,&]+,[ ]+(?:[\\w]+,[ ]+){2}[]]";
+    private static final String REGEX_LST_RRUCHAIN = "^[\\[](?:[\\d][0-9]|[\\d][0-8][0-5]),[ ]+(?:[\\w]+,[ ]+){2}(?:[\\d],[ ]+){5}(?:(?:[\\w]+|[\\w]+ [\\w]+),[ ]+){13}[0-9,A-Z\\-]+,[ ]+[\\w]+,[ ]+[0-9,.:A-Z&]+,[ ]+(?:[\\w]+,[ ]+){2}[]]";
 
     private static final String SM = "<samp data-tooltip=\"SINGLEMODE\">SM</samp>";
     private static final String MM = "<samp data-tooltip=\"MULTIMODE\">MM</samp>";
+    private static final String NULL = "<samp data-tooltip=\"NULL\">NULL</samp>";
 
 
     private static final ArrayList<Result> arrResult = new ArrayList<>();
@@ -33,6 +35,30 @@ class ParseCSV {
     private static final LST_RRUCHAIN lst_rruchain = new LST_RRUCHAIN();
     private static String Header;
 
+    private static String BtsNameBBU_dsp;
+    private static int slotBBU_dsp;
+    private static int portBBU_dsp;
+    private static double tx_bbu;
+    private static double rx_bbu;
+    private static String sfp_BBU;
+    private static double sfp_BBU_Speed;
+    private static String sfp_BBU_Mode;
+
+    private static String BtsNameRRU_dsp;
+    private static int subRackRRU_dsp;
+    private static double tx_rru;
+    private static double rx_rru;
+    private static String sfp_RRU;
+    private static double sfp_RRU_Speed;
+    private static String sfp_RRU_Mode;
+
+    private static String BtsNameRRU_lst;
+    private static int subRackRRU_lst;
+    private static int slotRRU_lst;
+    private static int portRRU_lst;
+
+    private static final List<Integer> RRUs = new ArrayList<>();
+
     static void main(String args) {
 
         arrResult.clear();
@@ -40,6 +66,7 @@ class ParseCSV {
         dsp_sfp.getArrBBU_port().clear();
         dsp_sfp.getArrRRU().clear();
         lst_rruchain.getArrRRU().clear();
+        RRUs.clear();
         RESULT.clear();
 
         try {
@@ -50,7 +77,7 @@ class ParseCSV {
         }
     }
 
-    private static void ScanDoc(CSVReader reader) {
+    private static void ScanDoc(@NotNull CSVReader reader) {
         try {
             List<String[]> allRows = reader.readAll();
             for (String[] row : allRows) {
@@ -85,63 +112,7 @@ class ParseCSV {
     public static ArrayList<String> getRESULT() {
 
         /*Мексиканская дуэль =)*/
-        for (RRU rru : lst_rruchain.getArrRRU()) {
-            for (BBU_Port bbu : dsp_sfp.getArrBBU_port()) {
-                for (RRU rru1 : dsp_sfp.getArrRRU()) {
-                    try {
-                        String BtsNameBBU_dsp = bbu.getBTS_name();
-                        int slotBBU_dsp = bbu.getSlot_BBU();
-                        int portBBU_dsp = bbu.getPort_BBU();
-                        double tx_bbu = bbu.getTx_BBU() * 0.01;
-                        double rx_bbu = bbu.getRx_BBU() * 0.01;
-                        String sfp_BBU = bbu.getSfp_BBU();
-                        double sfp_BBU_Speed = bbu.getSfp_BBU_Speed();
-                        String sfp_BBU_Mode = bbu.getSfp_Mode();
-
-                        String BtsNameRRU_dsp = rru1.getBTS_name();
-                        int subRackRRU_dsp = rru1.getSubRack_RRU();
-                        double tx_rru = rru1.getTx_RRU() * 0.01;
-                        double rx_rru = rru1.getRx_RRU() * 0.01;
-                        String sfp_RRU = rru1.getSfp_RRU();
-                        double sfp_RRU_Speed = rru1.getSfp_RRU_Speed();
-                        String sfp_RRU_Mode = rru1.getSfp_Mode();
-
-                        String BtsNameRRU_lst = rru.getBTS_name();
-                        int subRackRRU_lst = rru.getSubRack_RRU();
-                        int slotRRU_lst = rru.getSlot_RRU();
-                        int portRRU_lst = rru.getPort_RRU();
-
-                        /*Фильтруем данные*/
-                        if (BtsNameBBU_dsp.equals(BtsNameRRU_dsp) && BtsNameRRU_dsp.equals(BtsNameRRU_lst)) {
-                            if (subRackRRU_dsp == subRackRRU_lst) {
-                                if (slotBBU_dsp == slotRRU_lst) {
-                                    if (portBBU_dsp == portRRU_lst) {
-                                        Result result = new Result();
-                                        result.setForResult(BtsNameRRU_lst,
-                                                slotBBU_dsp, portBBU_dsp,
-                                                tx_bbu,
-                                                rx_bbu,
-                                                subRackRRU_lst,
-                                                tx_rru,
-                                                rx_rru,
-                                                sfp_BBU,
-                                                sfp_BBU_Speed,
-                                                sfp_RRU,
-                                                sfp_RRU_Speed,
-                                                sfp_BBU_Mode,
-                                                sfp_RRU_Mode);
-                                        arrResult.add(result);
-                                    }
-                                }
-                            }
-                        }
-                    } catch (IndexOutOfBoundsException e) {
-                        System.out.println("getRESULT.IndexOutOfBoundsException: " + e.getMessage());
-                    }
-                }
-            }
-        }
-
+        AAA();
         /*Устанавливаем заголовок*/
         List<String> set = arrScanDoc.stream().distinct().collect(Collectors.toList());
         for (String s : set) {
@@ -164,6 +135,100 @@ class ParseCSV {
         }
         /*Возвращаем результат*/
         return RESULT;
+    }
+
+    private static void AAA() {
+
+        if (lst_rruchain.getArrRRU().size() != dsp_sfp.getArrRRU().size()) {
+            AAAa();
+        }
+
+        for (RRU rru : lst_rruchain.getArrRRU()) {
+            for (BBU_Port bbu : dsp_sfp.getArrBBU_port()) {
+                for (RRU rru1 : dsp_sfp.getArrRRU()) {
+                    try {
+                        BtsNameBBU_dsp = bbu.getBTS_name();
+                        slotBBU_dsp = bbu.getSlot_BBU();
+                        portBBU_dsp = bbu.getPort_BBU();
+                        tx_bbu = bbu.getTx_BBU() * 0.01;
+                        rx_bbu = bbu.getRx_BBU() * 0.01;
+                        sfp_BBU = bbu.getSfp_BBU();
+                        sfp_BBU_Speed = bbu.getSfp_BBU_Speed();
+                        sfp_BBU_Mode = bbu.getSfp_Mode();
+
+                        BtsNameRRU_dsp = rru1.getBTS_name();
+                        subRackRRU_dsp = rru1.getSubRack_RRU();
+                        tx_rru = rru1.getTx_RRU() * 0.01;
+                        rx_rru = rru1.getRx_RRU() * 0.01;
+                        sfp_RRU = rru1.getSfp_RRU();
+                        sfp_RRU_Speed = rru1.getSfp_RRU_Speed();
+                        sfp_RRU_Mode = rru1.getSfp_Mode();
+
+                        BtsNameRRU_lst = rru.getBTS_name();
+                        subRackRRU_lst = rru.getSubRack_RRU();
+                        slotRRU_lst = rru.getSlot_RRU();
+                        portRRU_lst = rru.getPort_RRU();
+
+                        /*Фильтруем данные*/
+                            AAAb();
+                    } catch (IndexOutOfBoundsException e) {
+                        System.out.println("getRESULT.IndexOutOfBoundsException: " + e.getMessage());
+                    }
+                }
+            }
+        }
+    }
+
+    private static void AAAa() {
+
+        RRUs.clear();
+
+        for (RRU rru : lst_rruchain.getArrRRU()) {
+            RRUs.add(rru.getSubRack_RRU());
+        }
+        for (RRU rru1 : dsp_sfp.getArrRRU()) {
+            RRUs.add(rru1.getSubRack_RRU());
+        }
+
+        List<Integer> rrus = RRUs.stream().distinct().collect(Collectors.toList());
+
+        for (int i = 0; i < rrus.size(); i++) {
+            for (RRU rru : dsp_sfp.getArrRRU()) {
+                if (rru.getSubRack_RRU() == rrus.get(i)){
+                    rrus.remove(i);
+                }
+            }
+        }
+
+        for (int i : rrus) {
+            dsp_sfp.setRRU(new RRU(Header, i, 0, 1, 0, 0, null, 0, NULL));
+        }
+    }
+
+    private static void AAAb() {
+        if (BtsNameBBU_dsp.equals(BtsNameRRU_dsp) && BtsNameRRU_dsp.equals(BtsNameRRU_lst)) {
+            if (subRackRRU_dsp == subRackRRU_lst) {
+                if (slotBBU_dsp == slotRRU_lst) {
+                    if (portBBU_dsp == portRRU_lst) {
+                        Result result = new Result();
+                        result.setForResult(BtsNameRRU_lst,
+                                slotBBU_dsp, portBBU_dsp,
+                                tx_bbu,
+                                rx_bbu,
+                                subRackRRU_lst,
+                                tx_rru,
+                                rx_rru,
+                                sfp_BBU,
+                                sfp_BBU_Speed,
+                                sfp_RRU,
+                                sfp_RRU_Speed,
+                                sfp_BBU_Mode,
+                                sfp_RRU_Mode);
+                        arrResult.add(result);
+                    }
+                }
+            }
+        }
     }
 
     private static void itIsSideBBU(String[] row) {

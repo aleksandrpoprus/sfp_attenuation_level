@@ -131,8 +131,9 @@ public class Result {
 
         String SM = "<samp data-tooltip=\"SINGLEMODE\">SM</samp>";
         String MM = "<samp data-tooltip=\"MULTIMODE\">MM</samp>";
+        String NULL = "<samp data-tooltip=\"NULL\">NULL</samp>";
 
-        if(sfp_BBU_Speed != sfp_RRU_Speed && (sfp_BBU_Mode.equals(SM) && sfp_RRU_Mode.equals(SM))) {
+        if (sfp_BBU_Speed != sfp_RRU_Speed && (sfp_BBU_Mode.equals(SM) && sfp_RRU_Mode.equals(SM))) {
             s3 = String.format("<p>" +
                             "BBU(%d, %d) - " +
                             "<samp data-tooltip=\"Manufacturer name\">MF: %s</samp>; " +
@@ -159,7 +160,8 @@ public class Result {
                     sfp_RRU_Speed / 10,
                     sfp_RRU_Mode,
                     warningRed);
-        } else if(sfp_BBU_Speed != sfp_RRU_Speed && (sfp_BBU_Mode.equals(SM) && sfp_RRU_Mode.equals(MM) || sfp_BBU_Mode.equals(MM) && sfp_RRU_Mode.equals(SM))){
+        } else if (sfp_BBU_Speed != sfp_RRU_Speed && (sfp_BBU_Mode.equals(SM) && sfp_RRU_Mode.equals(MM) ||
+                sfp_BBU_Mode.equals(MM) && sfp_RRU_Mode.equals(SM))) {
             s3 = String.format("<p>" +
                             "BBU(%d, %d) - " +
                             "<samp data-tooltip=\"Manufacturer name\">MF: %s</samp>; " +
@@ -186,6 +188,38 @@ public class Result {
                     sfp_RRU_Speed / 10,
                     sfp_RRU_Mode,
                     warningYellow);
+
+
+        } else if (sfp_BBU_Speed != sfp_RRU_Speed && (sfp_BBU_Mode.equals(SM) && sfp_RRU_Mode.equals(NULL) ||
+                sfp_BBU_Mode.equals(MM) && sfp_RRU_Mode.equals(NULL))) {
+            s3 = String.format("<p>" +
+                            "BBU(%d, %d) - " +
+                            "<samp data-tooltip=\"Manufacturer name\">MF: %s</samp>; " +
+                            "<samp data-tooltip=\"Transmission code rate\">TCR</samp>: " +
+                            "<samp data-tooltip=\"Разные TCR и MODE(требуется уточнение)\"><samp1>%.1f</samp1></samp> Gbit/s; " +
+                            "mode: " +
+                            "<samp2>%s</samp2>. " +
+                            "%s</p>\n" +
+                            "<p>RRU(%d) - " +
+                            "<samp data-tooltip=\"Manufacturer name\">MF: %s</samp>; " +
+                            "<samp data-tooltip=\"Transmission code rate\">TCR</samp>: " +
+                            "<samp data-tooltip=\"Питание RRU отключено или обрыв оптики!\"><samp1>%s</samp1></samp> Gbit/s; " +
+                            "mode: " +
+                            "<samp2>%s</samp2>. " +
+                            "%s" +
+                            "</p>",
+                    slot_bbu, port_bbu,
+                    sfp_BBU,
+                    sfp_BBU_Speed / 10,
+                    sfp_BBU_Mode,
+                    warningYellow,
+                    subRack_rru,
+                    "NULL",
+                    "NULL",
+                    sfp_RRU_Mode,
+                    warningRed);
+
+
         } else {
             s3 = String.format("<p>BBU(%d, %d) - " +
                             "<samp data-tooltip=\"Manufacturer name\">MF: %s</samp>;" +
@@ -208,7 +242,7 @@ public class Result {
                     sfp_RRU_Speed / 10,
                     sfp_RRU_Mode);
         }
-        return  s1 + s2 + s3;
+        return s1 + s2 + s3;
     }
 
     @Override
