@@ -33,8 +33,8 @@ class ParseCSV {
     private static final ArrayList<String> RESULT = new ArrayList<>();
     private static final DSP_SFP dsp_sfp = new DSP_SFP();
     private static final LST_RRUCHAIN lst_rruchain = new LST_RRUCHAIN();
+    private static final List<Integer> RRUs = new ArrayList<>();
     private static String Header;
-
     private static String BtsNameBBU_dsp;
     private static int slotBBU_dsp;
     private static int portBBU_dsp;
@@ -43,7 +43,6 @@ class ParseCSV {
     private static String sfp_BBU;
     private static double sfp_BBU_Speed;
     private static String sfp_BBU_Mode;
-
     private static String BtsNameRRU_dsp;
     private static int subRackRRU_dsp;
     private static double tx_rru;
@@ -51,13 +50,10 @@ class ParseCSV {
     private static String sfp_RRU;
     private static double sfp_RRU_Speed;
     private static String sfp_RRU_Mode;
-
     private static String BtsNameRRU_lst;
     private static int subRackRRU_lst;
     private static int slotRRU_lst;
     private static int portRRU_lst;
-
-    private static final List<Integer> RRUs = new ArrayList<>();
 
     static void main(String args) {
 
@@ -139,6 +135,7 @@ class ParseCSV {
 
     private static void AAA() {
 
+        /*Проверка на обрыв оптики (или отключенеи RRU)*/
         if (lst_rruchain.getArrRRU().size() != dsp_sfp.getArrRRU().size()) {
             AAAa();
         }
@@ -170,7 +167,7 @@ class ParseCSV {
                         portRRU_lst = rru.getPort_RRU();
 
                         /*Фильтруем данные*/
-                            AAAb();
+                        AAAb();
                     } catch (IndexOutOfBoundsException e) {
                         System.out.println("getRESULT.IndexOutOfBoundsException: " + e.getMessage());
                     }
@@ -194,7 +191,7 @@ class ParseCSV {
 
         for (int i = 0; i < rrus.size(); i++) {
             for (RRU rru : dsp_sfp.getArrRRU()) {
-                if (rru.getSubRack_RRU() == rrus.get(i)){
+                if (rru.getSubRack_RRU() == rrus.get(i)) {
                     rrus.remove(i);
                 }
             }
