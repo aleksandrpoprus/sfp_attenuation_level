@@ -22,8 +22,7 @@ public class Result {
     private String sfp_BBU_Mode;
     private String sfp_RRU_Mode;
 
-    private String warningRed;
-    private String warningYellow;
+    private String warningGreen, warningRed, warningYellow;
 
     private String TCR;
 
@@ -66,11 +65,12 @@ public class Result {
         return bts_name;
     }
 
-    public String getResult() {
+    public String getResultFull() {
 
         difference1 = tx_bbu - rx_rru;
         difference2 = rx_bbu - tx_rru;
 
+        warningGreen = "<samp id=\"triangle-up-green\"></samp>";
         warningRed = "<samp id=\"triangle-up-red\"></samp>";
         warningYellow = "<samp id=\"triangle-up-yellow\"></samp>";
 
@@ -83,30 +83,75 @@ public class Result {
         String s1, s2, s3;
 
         if (difference1 > 4 || difference1 < -4) {
-            s1 = "<p>" + sfp_attenuation(true, true) + "</p>\n";
+            s1 = "<p>" + sfp_attenuation(true, true) + "</p>";
         } else {
-            s1 = "<p>" + sfp_attenuation(true, false) + "</p>\n";
+            s1 = "<p>" + sfp_attenuation(true, false) + "</p>";
         }
 
         if (difference2 > 4 || difference2 < -4) {
-            s2 = "<p>" + sfp_attenuation(false, true) + "</p>\n";
+            s2 = "<p>" + sfp_attenuation(false, true) + "</p>";
         } else {
-            s2 = "<p>" + sfp_attenuation(false, false) + "</p>\n";
+            s2 = "<p>" + sfp_attenuation(false, false) + "</p>";
         }
 
         if (sfp_BBU_Speed != sfp_RRU_Speed && (sfp_BBU_Mode.equals(SM) && sfp_RRU_Mode.equals(SM))) {
-            s3 = "<p>" + sfp_info(true, false, false) + "</p>\n";
+            s3 = "<p>" + sfp_info(true, false, false) + "</p>";
         } else if (sfp_BBU_Speed != sfp_RRU_Speed && (sfp_BBU_Mode.equals(SM) && sfp_RRU_Mode.equals(MM) ||
                 sfp_BBU_Mode.equals(MM) && sfp_RRU_Mode.equals(SM))) {
-            s3 = "<p>" + sfp_info(false, true, false) + "</p>\n";
-
+            s3 = "<p>" + sfp_info(false, true, false) + "</p>";
         } else if (sfp_BBU_Speed != sfp_RRU_Speed && (sfp_BBU_Mode.equals(SM) && sfp_RRU_Mode.equals(NULL) ||
                 sfp_BBU_Mode.equals(MM) && sfp_RRU_Mode.equals(NULL))) {
-            s3 = "<p>" + sfp_info(false, false, true) + "</p>\n";
+            s3 = "<p>" + sfp_info(false, false, true) + "</p>";
         } else {
-            s3 = "<p>" + sfp_info(false, false, false) + "</p>\n";
+            s3 = "<p>" + sfp_info(false, false, false) + "</p>";
         }
-        return s1 + "\n" + s2 + "\n" + s3 + "\n";
+        return String.format("%s</summary><div>" +
+                        "<div>" +
+                        "<p class=\"p0\">Затухание ВОЛС:</p>" +
+                        "%s%n%s</div>" +
+                        "<div>" +
+                        "<p class=\"p0\">Информация по SFP модулям:</p>" +
+                        "%s</div>" +
+                        "</div>",
+                detailsSummary(), s1, s2, s3);
+    }
+
+    public String detailsSummary() {
+
+        String diff, speed, mode;
+
+        if (difference1 > 4 || difference1 < -4) {
+            diff = warningRed;
+        } else if (difference2 > 4 || difference2 < -4) {
+            diff = warningRed;
+        } else {
+            diff = warningGreen;
+        }
+
+        if (sfp_BBU_Speed != sfp_RRU_Speed) {
+            speed = warningRed;
+        } else {
+            speed = warningGreen;
+        }
+
+        if (sfp_BBU_Mode.equals(SM) && sfp_RRU_Mode.equals(MM) ||
+                sfp_BBU_Mode.equals(MM) && sfp_RRU_Mode.equals(SM)) {
+            mode = warningYellow;
+        } else if ((sfp_BBU_Mode.equals(SM) && sfp_RRU_Mode.equals(NULL) ||
+                sfp_BBU_Mode.equals(MM) && sfp_RRU_Mode.equals(NULL))) {
+            mode = warningRed;
+        } else {
+            mode = warningGreen;
+        }
+
+        return "BBU(" + slot_bbu + ", " + port_bbu + ") " +
+                "<--> " +
+                "RRU(" + subRack_rru + ") " +
+                diff +
+                ";     ;" +
+                speed +
+                ";     ;" +
+                mode;
     }
 
     private String sfp_attenuation(boolean b, boolean wr) {
@@ -127,13 +172,12 @@ public class Result {
             warning = "";
         }
 
-        s1 =
-                "BBU(" + slot_bbu + ", " + port_bbu + ") " +
-                        TRX1 +
-                        sampSelector(b, wr) +
-                        TRX2 +
-                        "RRU (" + subRack_rru + ") " +
-                        warning;
+        s1 = "BBU(" + slot_bbu + ", " + port_bbu + ") " +
+                TRX1 +
+                sampSelector(b, wr) +
+                TRX2 +
+                "RRU (" + subRack_rru + ") " +
+                warning;
         return s1;
     }
 
@@ -142,32 +186,32 @@ public class Result {
         String s0, s1, mode0, mode1, warning0, warning1;
 
         if (b0) {
-            s0 = String.format("<samp data-tooltip=\"В RRU sfp c инным TCR\"><samp1>%.1f</samp1></samp> Gbit/s; ", sfp_BBU_Speed / 10);
-            s1 = String.format("<samp data-tooltip=\"В RRU sfp c инным TCR\"><samp1>%.1f</samp1></samp> Gbit/s; ", sfp_RRU_Speed / 10);
-            mode0 = String.format("<samp2>%s</samp2>. ", sfp_BBU_Mode);
-            mode1 = String.format("<samp2>%s</samp2>. ", sfp_RRU_Mode);
+            s0 = String.format("<samp data-tooltip=\"В RRU sfp c инным TCR\"><samp class=\"samp1\">%.1f</samp></samp> Gbit/s; ", sfp_BBU_Speed / 10);
+            s1 = String.format("<samp data-tooltip=\"В RRU sfp c инным TCR\"><samp class=\"samp1\">%.1f</samp></samp> Gbit/s; ", sfp_RRU_Speed / 10);
+            mode0 = String.format("<samp class=\"samp2\">%s</samp>", sfp_BBU_Mode);
+            mode1 = String.format("<samp class=\"samp2\">%s</samp>", sfp_RRU_Mode);
             warning0 = warningRed;
             warning1 = warningRed;
         } else if (b1) {
-            s0 = String.format("<samp data-tooltip=\"Разные TCR и MODE(требуется уточнение)\"><samp1>%.1f</samp1></samp> Gbit/s; ", sfp_BBU_Speed / 10);
-            s1 = String.format("<samp data-tooltip=\"Разные TCR и MODE(требуется уточнение)\"><samp1>%.1f</samp1></samp> Gbit/s; ", sfp_RRU_Speed / 10);
-            mode0 = String.format("<samp2>%s</samp2>. ", sfp_BBU_Mode);
-            mode1 = String.format("<samp2>%s</samp2>. ", sfp_RRU_Mode);
+            s0 = String.format("<samp data-tooltip=\"Разные TCR и MODE\"><samp class=\"samp1\">%.1f</samp></samp> Gbit/s; ", sfp_BBU_Speed / 10);
+            s1 = String.format("<samp data-tooltip=\"Разные TCR и MODE\"><samp class=\"samp1\">%.1f</samp></samp> Gbit/s; ", sfp_RRU_Speed / 10);
+            mode0 = String.format("<samp class=\"samp2\">%s</samp>", sfp_BBU_Mode);
+            mode1 = String.format("<samp class=\"samp2\">%s</samp>", sfp_RRU_Mode);
             warning0 = warningYellow;
             warning1 = warningYellow;
         } else if (b2) {
-            s0 = String.format("<samp data-tooltip=\"Разные TCR и MODE(требуется уточнение)\"><samp1>%.1f</samp1></samp> Gbit/s; ", sfp_BBU_Speed / 10);
-            s1 = String.format("<samp data-tooltip=\"Питание RRU отключено или обрыв оптики!\"><samp1>%s</samp1></samp> Gbit/s; ", NULL);
-            mode0 = String.format("<samp2>%s</samp2>. ", sfp_BBU_Mode);
-            mode1 = String.format("<samp2>%s</samp2>. ", sfp_RRU_Mode);
+            s0 = String.format("<samp data-tooltip=\"Разные TCR и MODE\"><samp class=\"samp1\">%.1f</samp></samp> Gbit/s; ", sfp_BBU_Speed / 10);
+            s1 = String.format("<samp data-tooltip=\"RRU недоступен!\"><samp class=\"samp1\">%s</samp></samp> Gbit/s; ", NULL);
+            mode0 = String.format("<samp class=\"samp2\">%s</samp>", sfp_BBU_Mode);
+            mode1 = String.format("<samp class=\"samp2\">%s</samp>", sfp_RRU_Mode);
             warning0 = warningYellow;
             warning1 = warningRed;
         } else {
 
-            s0 = String.format("<samp0>%.1f</samp0> Gbit/s; ",sfp_BBU_Speed / 10);
-            s1 = String.format("<samp0>%.1f</samp0> Gbit/s; ",sfp_RRU_Speed / 10);
-            mode0 = String.format("<samp2>%s</samp2>. ", sfp_BBU_Mode);
-            mode1 = String.format("<samp2>%s</samp2>. ", sfp_RRU_Mode);
+            s0 = String.format("<samp class=\"samp2\">%.1f</samp> Gbit/s; ", sfp_BBU_Speed / 10);
+            s1 = String.format("<samp class=\"samp2\">%.1f</samp> Gbit/s; ", sfp_RRU_Speed / 10);
+            mode0 = String.format("<samp class=\"samp2\">%s</samp>", sfp_BBU_Mode);
+            mode1 = String.format("<samp class=\"samp2\">%s</samp>", sfp_RRU_Mode);
             warning0 = "";
             warning1 = "";
         }
@@ -190,21 +234,16 @@ public class Result {
                         "mode: " +
                         mode1 +
                         warning1;
-
-
         return BBU + RRU;
     }
 
     private String sampSelector(boolean b, boolean wr) {
-        String s1;
         double difference = b ? (difference1 < 0) ? difference1 * -1 : difference1 : (difference2 < 0) ? difference2 * -1 : difference2;
 
         if (wr) {
-            s1 = String.format("(<samp1 data-tooltip=\"Превышение уровня затухания! %.2f > 4 dbm\">%.2f</samp1> dbm)", difference, difference);
+            return String.format("(<samp class=\"samp1\" data-tooltip=\"Превышение уровня затухания! %.2f > 4 dbm\">%.2f</samp> dbm)", difference, difference);
         } else {
-            s1 = String.format("(<samp0>%.2f</samp0> dbm)", difference);
+            return String.format("(<samp class=\"samp0\">%.2f</samp> dbm)", difference);
         }
-
-        return s1;
     }
 }

@@ -79,42 +79,62 @@ public class Controller {
                 "    <style>\n" +
                 "        h1 {\n" +
                 "            font-family: Verdana, Arial, Helvetica, sans-serif;\n" +
-                "            font-size: 11pt; /* Размер шрифта в пунктах */\n" +
+                "            font-size: 12pt; /* Размер шрифта в пунктах */\n" +
+                "            font-weight: bold;\n" +
                 "            text-align: center;\n" +
                 "        }\n" +
                 "\n" +
                 "        p {\n" +
                 "            font-family: Verdana, Arial, Helvetica, sans-serif;\n" +
-                "            font-size: 10pt; /* Размер шрифта в пунктах */\n" +
+                "            font-size: 11pt; /* Размер шрифта в пунктах */\n" +
                 "            text-align: left;\n" +
+                "        }\n" +
+                "\n" +
+                "        .p0 {\n" +
+                "            font-size: 11pt;\n" +
+                "            font-weight: bold;\n" +
+                "            background: royalblue;\n" +
+                "            text-align: center;\n" +
                 "        }\n" +
                 "\n" +
                 "        samp {\n" +
                 "            font-family: Verdana, Arial, Helvetica, sans-serif;\n" +
-                "            font-size: 10pt; /* Размер шрифта в пунктах */\n" +
+                "            font-size: 11pt; /* Размер шрифта в пунктах */\n" +
                 "        }\n" +
                 "\n" +
-                "        samp0 {\n" +
+                "        .samp0 {\n" +
                 "            font-family: Verdana, Arial, Helvetica, sans-serif;\n" +
                 "            font-size: 11pt; /* Размер шрифта в пунктах */\n" +
                 "            color: green;\n" +
                 "        }\n" +
                 "\n" +
-                "        samp1 {\n" +
+                "        .samp1 {\n" +
                 "            font-family: Verdana, Arial, Helvetica, sans-serif;\n" +
                 "            font-size: 11pt; /* Размер шрифта в пунктах */\n" +
                 "            color: red;\n" +
                 "        }\n" +
                 "\n" +
-                "        samp2 {\n" +
+                "        .samp2 {\n" +
                 "            font-family: Verdana, Arial, Helvetica, sans-serif;\n" +
-                "            font-size: 10pt; /* Размер шрифта в пунктах */\n" +
+                "            font-size: 11pt; /* Размер шрифта в пунктах */\n" +
                 "            color: blue;\n" +
                 "        }\n" +
                 "\n" +
-                "        img {\n" +
-                "            height: 16px;\n" +
-                "            width: 16px;\n" +
+                "        .warning {\n" +
+                "            border: 2px solid black;\n" +
+                "            background-color: #babababa;\n" +
+                "            padding: .2rem;\n" +
+                "            display: compact;\n" +
+                "            flex-direction: column;\n" +
+                "        }\n" +
+                "\n" +
+                "        #triangle-up-green {\n" +
+                "            width: 0;\n" +
+                "            height: 0;\n" +
+                "            position: absolute;\n" +
+                "            border-left: 8px solid transparent;\n" +
+                "            border-right: 8px solid transparent;\n" +
+                "            border-bottom: 16px solid green;\n" +
                 "        }\n" +
                 "\n" +
                 "        #triangle-up-red {\n" +
@@ -143,16 +163,15 @@ public class Controller {
                 "            content: attr(data-tooltip); /* Выводим текст */\n" +
                 "            position: absolute; /* Абсолютное позиционирование */\n" +
                 "            text-align: center;\n" +
-                "            font-size: 8pt;\n" +
+                "            font-size: 9pt;\n" +
                 "            white-space: nowrap; /* Переносов в тексте нет */\n" +
                 "            width: auto; /* Ширина подсказки */\n" +
                 "            font-weight: bold; /* Жирное начертание */\n" +
                 "            left: 0;\n" +
                 "            top: 0; /* Положение подсказки */\n" +
-                "            background: #3989c9; /* Синий цвет фона */\n" +
+                "            background: royalblue; /* Синий цвет фона */\n" +
                 "            color: black; /* Цвет текста */\n" +
-                "            padding: 0.3em; /* Поля вокруг текста */\n" +
-                "            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* Параметры тени */\n" +
+                "            padding: 0.2em; /* Поля вокруг текста */\n" +
                 "            pointer-events: none; /* Подсказка */\n" +
                 "            opacity: 0; /* Подсказка невидима */\n" +
                 "            transition: 0.5s; /* Время появления подсказки */\n" +
@@ -160,8 +179,16 @@ public class Controller {
                 "\n" +
                 "        [data-tooltip]:hover::after {\n" +
                 "            opacity: 1.0; /* Показываем подсказку */\n" +
-                "            top: 1.2em; /* Положение подсказки */\n" +
+                "            top: 1em; /* Положение подсказки */\n" +
                 "            left: -2em; /* Положение подсказки */\n" +
+                "        }\n" +
+                "\n" +
+                "        details[open] div {\n" +
+                "            animation: spoiler 1s;\n" +
+                "        }\n" +
+                "        @keyframes spoiler {\n" +
+                "            0%   {opacity: 0;}\n" +
+                "            100% {opacity: 1;}\n" +
                 "        }\n" +
                 "    </style>\n" +
                 "</head>\n" +
