@@ -113,7 +113,7 @@ class ParseCSV {
         List<String> set = arrScanDoc.stream().distinct().collect(Collectors.toList());
         for (String s : set) {
             if (Pattern.matches(REGEX_HEAD, s)) {
-                String head = "<div class=\"warning\" style=\"background: grey\"><h1>" + s + "</h1>\n";
+                String head = "<div class=\"div\" style=\"background: #96aabe\"><h1>" + s + "</h1>\n";
                 RESULT.add(head);
 
                 /*Добавляем все результаты для БС,
@@ -124,9 +124,7 @@ class ParseCSV {
                     String s2 = "[" + result.getBts_name() + "]";
                     if (s.equals(s2)) {
                         BtsName.add(s);
-                        RESULT.add("<div class=\"warning\">" +
-                                "<details>" +
-                                "<summary style=\"text-align: center\">" + BtsName.size() + ": " + result.getResultFull() + "</details></div><p></p>");
+                        RESULT.add("<div class=\"div\">" + result.getResult(BtsName.size()) + "</div><p></p>");
                     }
                 }
                 String tail = "</div><p></p>";

@@ -28,6 +28,8 @@ public class Result {
 
     private String SM, MM, NULL;
 
+    private boolean warningSignal = true;
+
     public void setForResult(String bts_name,
                              int slot_bbu,
                              int port_bbu,
@@ -65,14 +67,14 @@ public class Result {
         return bts_name;
     }
 
-    public String getResultFull() {
+    public String getResult(int i) {
 
-        difference1 = tx_bbu - rx_rru;
-        difference2 = rx_bbu - tx_rru;
+        difference1 = tx_bbu - rx_rru < 0 ? (tx_bbu - rx_rru) * -1 : tx_bbu - rx_rru;
+        difference2 = rx_bbu - tx_rru < 0 ? (rx_bbu - tx_rru) * -1 : rx_bbu - tx_rru;
 
-        warningGreen = "<samp id=\"triangle-up-green\"></samp>";
-        warningRed = "<samp id=\"triangle-up-red\"></samp>";
-        warningYellow = "<samp id=\"triangle-up-yellow\"></samp>";
+        warningGreen = "<samp class=\"warningGreen\"> ▲ </samp>";
+        warningRed = "<samp class=\"warningRed\"> ▲ </samp>";
+        warningYellow = "<samp class=\"warningYellow\"> ▲ </samp>";
 
         TCR = "<samp data-tooltip=\"Transmission code rate\">TCR</samp>: ";
 
@@ -82,17 +84,8 @@ public class Result {
 
         String s1, s2, s3;
 
-        if (difference1 > 4 || difference1 < -4) {
-            s1 = "<p>" + sfp_attenuation(true, true) + "</p>";
-        } else {
-            s1 = "<p>" + sfp_attenuation(true, false) + "</p>";
-        }
-
-        if (difference2 > 4 || difference2 < -4) {
-            s2 = "<p>" + sfp_attenuation(false, true) + "</p>";
-        } else {
-            s2 = "<p>" + sfp_attenuation(false, false) + "</p>";
-        }
+        s1 = trx_selector(true, difference1);
+        s2 = trx_selector(false, difference2);
 
         if (sfp_BBU_Speed != sfp_RRU_Speed && (sfp_BBU_Mode.equals(SM) && sfp_RRU_Mode.equals(SM))) {
             s3 = "<p>" + sfp_info(true, false, false) + "</p>";
@@ -105,7 +98,8 @@ public class Result {
         } else {
             s3 = "<p>" + sfp_info(false, false, false) + "</p>";
         }
-        return String.format("%s</summary><div>" +
+
+        String result = String.format("%s</summary><div>" +
                         "<div>" +
                         "<p class=\"p0\">Затухание ВОЛС:</p>" +
                         "%s%n%s</div>" +
@@ -113,24 +107,33 @@ public class Result {
                         "<p class=\"p0\">Информация по SFP модулям:</p>" +
                         "%s</div>" +
                         "</div>",
-                detailsSummary(), s1, s2, s3);
+                details_summary(), s1, s2, s3);
+
+        if (warningSignal) {
+            return "<details open>" + "<summary style=\"text-align: center\">" + i + ": " + result + "</details>";
+        } else {
+            return "<details>" + "<summary style=\"text-align: center\">" + i + ": " + result + "</details>";
+        }
     }
 
-    public String detailsSummary() {
+    public String details_summary() {
 
         String diff, speed, mode;
+        boolean ws0 = true, ws1 = true, ws2 = true;
 
-        if (difference1 > 4 || difference1 < -4) {
-            diff = warningRed;
-        } else if (difference2 > 4 || difference2 < -4) {
-            diff = warningRed;
+        if (difference1 >= 3.9 && difference1 <= 3.99 || difference1 >= 4) {
+            diff = difference1 >= 4 ? warningRed : warningYellow;
+        } else if (difference2 >= 3.9 && difference2 <= 3.99 || difference2 >= 4) {
+            diff = difference2 >= 4 ? warningRed : warningYellow;
         } else {
+            ws0 = false;
             diff = warningGreen;
         }
 
         if (sfp_BBU_Speed != sfp_RRU_Speed) {
             speed = warningRed;
         } else {
+            ws1 = false;
             speed = warningGreen;
         }
 
@@ -141,24 +144,29 @@ public class Result {
                 sfp_BBU_Mode.equals(MM) && sfp_RRU_Mode.equals(NULL))) {
             mode = warningRed;
         } else {
+            ws2 = false;
             mode = warningGreen;
         }
 
+        warningSignal = ws0 || ws1 || ws2;
+
         return "BBU(" + slot_bbu + ", " + port_bbu + ") " +
                 "<--> " +
-                "RRU(" + subRack_rru + ") " +
+                "RRU(" + subRack_rru +
+                " " + sector_selector(subRack_rru) + ") " +
+                "trx: " +
                 diff +
-                ";     ;" +
+                "tcr: " +
                 speed +
-                ";     ;" +
+                "mode: " +
                 mode;
     }
 
-    private String sfp_attenuation(boolean b, boolean wr) {
+    private String sfp_attenuation(boolean b0, boolean b1, boolean b2) {
 
-        String s1, TRX1, TRX2, warning;
+        String result, TRX1, TRX2, warning = "";
 
-        if (b) {
+        if (b0) {
             TRX1 = String.format("Tx= %.2f dbm --", tx_bbu);
             TRX2 = String.format("--> Rx= %.2f dbm ", rx_rru);
         } else {
@@ -166,82 +174,168 @@ public class Result {
             TRX2 = String.format("-- TX= %.2f dbm ", tx_rru);
         }
 
-        if (wr) {
-            warning = warningRed;
-        } else {
-            warning = "";
-        }
-
-        s1 = "BBU(" + slot_bbu + ", " + port_bbu + ") " +
+        result = "BBU(" + slot_bbu + ", " + port_bbu + ") " +
                 TRX1 +
-                sampSelector(b, wr) +
+                samp_selector(b0, b1, b2) +
                 TRX2 +
-                "RRU (" + subRack_rru + ") " +
-                warning;
-        return s1;
+                "RRU (" + subRack_rru + ")" +
+                warning +
+                ";";
+        return result;
     }
 
     private String sfp_info(boolean b0, boolean b1, boolean b2) {
 
-        String s0, s1, mode0, mode1, warning0, warning1;
+        String s0, s1, mode0, mode1, warning0 = "", warning1 = "";
 
         if (b0) {
             s0 = String.format("<samp data-tooltip=\"В RRU sfp c инным TCR\"><samp class=\"samp1\">%.1f</samp></samp> Gbit/s; ", sfp_BBU_Speed / 10);
-            s1 = String.format("<samp data-tooltip=\"В RRU sfp c инным TCR\"><samp class=\"samp1\">%.1f</samp></samp> Gbit/s; ", sfp_RRU_Speed / 10);
+            s1 = String.format("<samp data-tooltip=\"В BBU sfp c инным TCR\"><samp class=\"samp1\">%.1f</samp></samp> Gbit/s; ", sfp_RRU_Speed / 10);
             mode0 = String.format("<samp class=\"samp2\">%s</samp>", sfp_BBU_Mode);
             mode1 = String.format("<samp class=\"samp2\">%s</samp>", sfp_RRU_Mode);
-            warning0 = warningRed;
-            warning1 = warningRed;
         } else if (b1) {
             s0 = String.format("<samp data-tooltip=\"Разные TCR и MODE\"><samp class=\"samp1\">%.1f</samp></samp> Gbit/s; ", sfp_BBU_Speed / 10);
             s1 = String.format("<samp data-tooltip=\"Разные TCR и MODE\"><samp class=\"samp1\">%.1f</samp></samp> Gbit/s; ", sfp_RRU_Speed / 10);
-            mode0 = String.format("<samp class=\"samp2\">%s</samp>", sfp_BBU_Mode);
-            mode1 = String.format("<samp class=\"samp2\">%s</samp>", sfp_RRU_Mode);
-            warning0 = warningYellow;
-            warning1 = warningYellow;
+            mode0 = String.format("<samp class=\"samp3\">%s</samp>", sfp_BBU_Mode);
+            mode1 = String.format("<samp class=\"samp3\">%s</samp>", sfp_RRU_Mode);
         } else if (b2) {
             s0 = String.format("<samp data-tooltip=\"Разные TCR и MODE\"><samp class=\"samp1\">%.1f</samp></samp> Gbit/s; ", sfp_BBU_Speed / 10);
             s1 = String.format("<samp data-tooltip=\"RRU недоступен!\"><samp class=\"samp1\">%s</samp></samp> Gbit/s; ", NULL);
-            mode0 = String.format("<samp class=\"samp2\">%s</samp>", sfp_BBU_Mode);
-            mode1 = String.format("<samp class=\"samp2\">%s</samp>", sfp_RRU_Mode);
-            warning0 = warningYellow;
-            warning1 = warningRed;
+            mode0 = String.format("<samp class=\"samp1\">%s</samp>", sfp_BBU_Mode);
+            mode1 = String.format("<samp class=\"samp1\">%s</samp>", sfp_RRU_Mode);
         } else {
-
             s0 = String.format("<samp class=\"samp2\">%.1f</samp> Gbit/s; ", sfp_BBU_Speed / 10);
             s1 = String.format("<samp class=\"samp2\">%.1f</samp> Gbit/s; ", sfp_RRU_Speed / 10);
             mode0 = String.format("<samp class=\"samp2\">%s</samp>", sfp_BBU_Mode);
             mode1 = String.format("<samp class=\"samp2\">%s</samp>", sfp_RRU_Mode);
-            warning0 = "";
-            warning1 = "";
         }
 
         String BBU =
                 "BBU(" + slot_bbu + ", " + port_bbu + ") " +
-                        "<samp data-tooltip=\"Manufacturer name\">MF: " + sfp_BBU + "</samp>; " +
+                        "<samp class=\"samp4\"><samp data-tooltip=\"Manufacturer name\">" + sfp_BBU + "</samp></samp>; " +
                         TCR +
                         s0 +
                         "mode: " +
                         mode0 +
                         warning0 +
+                        ";" +
                         "</p>\n";
         String RRU =
                 "<p>" +
                         "RRU(" + subRack_rru + ") - " +
-                        "<samp data-tooltip=\"Manufacturer name\">MF: " + sfp_RRU + "</samp>; " +
+                        "<samp class=\"samp4\"><samp data-tooltip=\"Manufacturer name\">" + sfp_RRU + "</samp></samp>; " +
                         TCR +
                         s1 +
                         "mode: " +
                         mode1 +
+                        ";" +
                         warning1;
         return BBU + RRU;
     }
 
-    private String sampSelector(boolean b, boolean wr) {
-        double difference = b ? (difference1 < 0) ? difference1 * -1 : difference1 : (difference2 < 0) ? difference2 * -1 : difference2;
+    private String trx_selector(boolean b0, double difference) {
 
-        if (wr) {
-            return String.format("(<samp class=\"samp1\" data-tooltip=\"Превышение уровня затухания! %.2f > 4 dbm\">%.2f</samp> dbm)", difference, difference);
+        if (difference >= 3.9 && difference <= 3.99 || difference >= 4)
+            if (difference >= 4) {
+                return "<p>" + sfp_attenuation(b0, true, false) + "</p>";
+            } else {
+                return "<p>" + sfp_attenuation(b0, true, true) + "</p>";
+            }
+        else {
+            return "<p>" + sfp_attenuation(b0, false, false) + "</p>";
+        }
+    }
+
+    private String sector_selector(int i) {
+
+        String blue9g = "<samp data-tooltip=\"GSM-900 МГц\"><samp class=\"samp2\">";
+        String blue9l = "<samp data-tooltip=\"LTE-800 МГц\"><samp class=\"samp2\">";
+        String green18d = "<samp data-tooltip=\"DSC-1800 МГц\"><samp class=\"samp0\">";
+        String green18l = "<samp data-tooltip=\"LTE-1800 МГц\"><samp class=\"samp0\">";
+        String red21u = "<samp data-tooltip=\"UMTS-2100 МГц\"><samp class=\"samp1\">";
+        String yellow26f = "<samp data-tooltip=\"LTE-2600 МГц FDD\"><samp class=\"samp3\">";
+        String yellow26t = "<samp data-tooltip=\"LTE-2600 МГц TDD\"><samp class=\"samp3\">";
+
+
+        switch (i) {
+            case (90):
+                return blue9g + "C1</samp></samp>";
+            case (91):
+                return blue9g + "C2</samp></samp>";
+            case (92):
+                return blue9g + "C3</samp></samp>";
+            case (93):
+                return blue9g + "C1.1</samp></samp>";
+
+            case (100):
+                return blue9g + "C1</samp></samp>," + blue9l + "C37</samp></samp>";
+            case (101):
+                return blue9g + "C2</samp></samp>," + blue9l + "C38</samp></samp>";
+            case (102):
+                return blue9g + "C3</samp></samp>," + blue9l + "C39</samp></samp>";
+            case (103):
+                return blue9g + "C1.1</samp></samp>," + blue9l + "C37.1</samp></samp>";
+
+            case (180):
+                return green18d + "C4</samp></samp>";
+            case (181):
+                return green18d + "C5</samp></samp>";
+            case (182):
+                return green18d + "C6</samp></samp>";
+            case (183):
+                return green18d + "C4.1</samp></samp>";
+
+            case (210):
+                return red21u + "C7</samp></samp>";
+            case (211):
+                return red21u + "C8</samp></samp>";
+            case (212):
+                return red21u + "C9</samp></samp>";
+            case (213):
+                return red21u + "C7.1</samp></samp>";
+
+            case (200):
+                return red21u + "C7</samp></samp>," + green18l + "C47</samp></samp>";
+            case (201):
+                return red21u + "C8</samp></samp>," + green18l + "C48</samp></samp>";
+            case (202):
+                return red21u + "C9</samp></samp>," + green18l + "C49</samp></samp>";
+            case (203):
+                return red21u + "C7.1</samp></samp>," + green18l + "C47.1</samp></samp>";
+
+            case (240):
+                return yellow26f + "C57</samp></samp>";
+            case (241):
+                return yellow26f + "C58</samp></samp>";
+            case (242):
+                return yellow26f + "C59</samp></samp>";
+            case (243):
+                return yellow26f + "C57.1</samp></samp>";
+
+            case (230):
+                return yellow26t + "C77</samp></samp>";
+            case (231):
+                return yellow26t + "C78</samp></samp>";
+            case (232):
+                return yellow26t + "C79</samp></samp>";
+            case (233):
+                return yellow26t + "C77.1</samp></samp>";
+            default:
+                return "</samp>";
+
+        }
+    }
+
+    private String samp_selector(boolean b0, boolean b1, boolean b2) {
+
+        double difference = b0 ? difference1 : difference2;
+
+        if (b1) {
+            if (b2) {
+                return String.format("(<samp class=\"samp3\" data-tooltip=\"Уровень затухания близок к превышению!\">%.2f</samp> dbm)", difference);
+            } else {
+                return String.format("(<samp class=\"samp1\" data-tooltip=\"Превышение уровня затухания! %.2f > 4 dbm\">%.2f</samp> dbm)", difference, difference);
+            }
         } else {
             return String.format("(<samp class=\"samp0\">%.2f</samp> dbm)", difference);
         }

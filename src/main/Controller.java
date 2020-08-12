@@ -72,21 +72,21 @@ public class Controller {
     private void htmlBuilder() {
 
         String header = "<!DOCTYPE html>\n" +
-                "<html lang=\"en\">\n" +
+                "<html lang=\"ru\">\n" +
                 "<head>\n" +
                 "    <meta charset=\"utf-8\">\n" +
                 "    <title>sfp_attenuation_level</title>\n" +
                 "    <style>\n" +
                 "        h1 {\n" +
                 "            font-family: Verdana, Arial, Helvetica, sans-serif;\n" +
-                "            font-size: 12pt; /* Размер шрифта в пунктах */\n" +
+                "            font-size: 12pt;\n" +
                 "            font-weight: bold;\n" +
                 "            text-align: center;\n" +
                 "        }\n" +
                 "\n" +
                 "        p {\n" +
                 "            font-family: Verdana, Arial, Helvetica, sans-serif;\n" +
-                "            font-size: 11pt; /* Размер шрифта в пунктах */\n" +
+                "            font-size: 11pt;\n" +
                 "            text-align: left;\n" +
                 "        }\n" +
                 "\n" +
@@ -99,101 +99,110 @@ public class Controller {
                 "\n" +
                 "        samp {\n" +
                 "            font-family: Verdana, Arial, Helvetica, sans-serif;\n" +
-                "            font-size: 11pt; /* Размер шрифта в пунктах */\n" +
+                "            font-size: 11pt;\n" +
                 "        }\n" +
                 "\n" +
                 "        .samp0 {\n" +
                 "            font-family: Verdana, Arial, Helvetica, sans-serif;\n" +
-                "            font-size: 11pt; /* Размер шрифта в пунктах */\n" +
+                "            font-size: 11pt;\n" +
+                "            font-weight: bold;\n" +
                 "            color: green;\n" +
                 "        }\n" +
                 "\n" +
                 "        .samp1 {\n" +
                 "            font-family: Verdana, Arial, Helvetica, sans-serif;\n" +
-                "            font-size: 11pt; /* Размер шрифта в пунктах */\n" +
+                "            font-size: 11pt;\n" +
+                "            font-weight: bold;\n" +
                 "            color: red;\n" +
                 "        }\n" +
                 "\n" +
                 "        .samp2 {\n" +
                 "            font-family: Verdana, Arial, Helvetica, sans-serif;\n" +
-                "            font-size: 11pt; /* Размер шрифта в пунктах */\n" +
+                "            font-size: 11pt;\n" +
+                "            font-weight: bold;\n" +
                 "            color: blue;\n" +
                 "        }\n" +
                 "\n" +
-                "        .warning {\n" +
+                "        .samp3 {\n" +
+                "            font-family: Verdana, Arial, Helvetica, sans-serif;\n" +
+                "            font-size: 11pt;\n" +
+                "            font-weight: bold;\n" +
+                "    color: #ff5900;\n" +
+                "        }\n" +
+                ".samp4 {\n" +
+                "    font-family: Verdana, Arial, Helvetica, sans-serif;\n" +
+                "    font-size: 11pt;\n" +
+                "    font-weight: bold;\n" +
+                "    text-transform: uppercase;\n" +
+                "    color: purple;\n" +
+                "}" +
+                "\n" +
+                "        .div {\n" +
                 "            border: 2px solid black;\n" +
-                "            background-color: #babababa;\n" +
+                "            background-color: lavender;\n" +
                 "            padding: .2rem;\n" +
                 "            display: compact;\n" +
                 "            flex-direction: column;\n" +
                 "        }\n" +
                 "\n" +
-                "        #triangle-up-green {\n" +
-                "            width: 0;\n" +
-                "            height: 0;\n" +
-                "            position: absolute;\n" +
-                "            border-left: 8px solid transparent;\n" +
-                "            border-right: 8px solid transparent;\n" +
-                "            border-bottom: 16px solid green;\n" +
+                "        .warningGreen {\n" +
+                "            font-size: 14pt;\n" +
+                "            color: green;\n" +
                 "        }\n" +
                 "\n" +
-                "        #triangle-up-red {\n" +
-                "            width: 0;\n" +
-                "            height: 0;\n" +
-                "            position: absolute;\n" +
-                "            border-left: 8px solid transparent;\n" +
-                "            border-right: 8px solid transparent;\n" +
-                "            border-bottom: 16px solid red;\n" +
+                "        .warningRed {\n" +
+                "            font-size: 14pt;\n" +
+                "            color: red;\n" +
                 "        }\n" +
                 "\n" +
-                "        #triangle-up-yellow {\n" +
-                "            width: 0;\n" +
-                "            height: 0;\n" +
-                "            position: absolute;\n" +
-                "            border-left: 8px solid transparent;\n" +
-                "            border-right: 8px solid transparent;\n" +
-                "            border-bottom: 16px solid orange;\n" +
+                "        .warningYellow {\n" +
+                "            font-size: 14pt;\n" +
+                "            color: #ff5900;\n" +
                 "        }\n" +
                 "\n" +
                 "        [data-tooltip] {\n" +
-                "            position: relative; /* Относительное позиционирование */\n" +
+                "            position: relative;\n" +
                 "        }\n" +
                 "\n" +
                 "        [data-tooltip]::after {\n" +
-                "            content: attr(data-tooltip); /* Выводим текст */\n" +
-                "            position: absolute; /* Абсолютное позиционирование */\n" +
+                "            content: attr(data-tooltip);\n" +
+                "            position: absolute;\n" +
                 "            text-align: center;\n" +
                 "            font-size: 9pt;\n" +
-                "            white-space: nowrap; /* Переносов в тексте нет */\n" +
-                "            width: auto; /* Ширина подсказки */\n" +
-                "            font-weight: bold; /* Жирное начертание */\n" +
+                "            white-space: nowrap;\n" +
+                "            width: auto;\n" +
+                "            font-weight: bold;\n" +
                 "            left: 0;\n" +
-                "            top: 0; /* Положение подсказки */\n" +
-                "            background: royalblue; /* Синий цвет фона */\n" +
-                "            color: black; /* Цвет текста */\n" +
-                "            padding: 0.2em; /* Поля вокруг текста */\n" +
-                "            pointer-events: none; /* Подсказка */\n" +
-                "            opacity: 0; /* Подсказка невидима */\n" +
-                "            transition: 0.5s; /* Время появления подсказки */\n" +
+                "            top: 0;\n" +
+                "            background: ghostwhite;\n" +
+                "            color: black;\n" +
+                "            padding: 0.2em;\n" +
+                "            pointer-events: none;\n" +
+                "            opacity: 0;\n" +
+                "            transition: 0.5s;\n" +
                 "        }\n" +
                 "\n" +
                 "        [data-tooltip]:hover::after {\n" +
-                "            opacity: 1.0; /* Показываем подсказку */\n" +
-                "            top: 1em; /* Положение подсказки */\n" +
-                "            left: -2em; /* Положение подсказки */\n" +
+                "            opacity: 1.0;\n" +
+                "            top: 1em;\n" +
+                "            left: -2em;\n" +
                 "        }\n" +
                 "\n" +
                 "        details[open] div {\n" +
-                "            animation: spoiler 1s;\n" +
+                "            animation: spoiler 0.5s;\n" +
                 "        }\n" +
+                "\n" +
                 "        @keyframes spoiler {\n" +
-                "            0%   {opacity: 0;}\n" +
-                "            100% {opacity: 1;}\n" +
+                "            0% {\n" +
+                "                opacity: 0;\n" +
+                "            }\n" +
+                "            100% {\n" +
+                "                opacity: 1;\n" +
+                "            }\n" +
                 "        }\n" +
                 "    </style>\n" +
                 "</head>\n" +
                 "<body>\n";
-
         String footer = "</body>\n" +
                 "<footer>\n" +
                 "</footer>\n" +

@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.web.*?>
 
-<VBox fx:id="vBox" stylesheets="@res/style/style.css"
+<VBox fx:id="vBox" stylesheets="@res/html/style/main_style.css"
       xmlns="http://javafx.com/javafx/10.0.2-internal"
       xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="main.Controller">
