@@ -249,7 +249,7 @@ public class Result {
     private String sector_selector(int i) {
 
         String blue9g = "<samp data-tooltip=\"GSM-900 МГц\"><samp class=\"samp2\">";
-        String blue9l = "<samp data-tooltip=\"LTE-800 МГц\"><samp class=\"samp2\">";
+        String yellow9l = "<samp data-tooltip=\"LTE-800 МГц\"><samp class=\"samp3\">";
         String green18d = "<samp data-tooltip=\"DSC-1800 МГц\"><samp class=\"samp0\">";
         String green18l = "<samp data-tooltip=\"LTE-1800 МГц\"><samp class=\"samp0\">";
         String red21u = "<samp data-tooltip=\"UMTS-2100 МГц\"><samp class=\"samp1\">";
@@ -268,13 +268,13 @@ public class Result {
                 return blue9g + "C1.1</samp></samp>";
 
             case (100):
-                return blue9g + "C1</samp></samp>," + blue9l + "C37</samp></samp>";
+                return blue9g + "C1</samp></samp>," + yellow9l + "C37</samp></samp>";
             case (101):
-                return blue9g + "C2</samp></samp>," + blue9l + "C38</samp></samp>";
+                return blue9g + "C2</samp></samp>," + yellow9l + "C38</samp></samp>";
             case (102):
-                return blue9g + "C3</samp></samp>," + blue9l + "C39</samp></samp>";
+                return blue9g + "C3</samp></samp>," + yellow9l + "C39</samp></samp>";
             case (103):
-                return blue9g + "C1.1</samp></samp>," + blue9l + "C37.1</samp></samp>";
+                return blue9g + "C1.1</samp></samp>," + yellow9l + "C37.1</samp></samp>";
 
             case (180):
                 return green18d + "C4</samp></samp>";
@@ -295,13 +295,13 @@ public class Result {
                 return red21u + "C7.1</samp></samp>";
 
             case (200):
-                return red21u + "C7</samp></samp>," + green18l + "C47</samp></samp>";
+                return green18d + "C4</samp></samp>," + red21u + "C7</samp></samp>," + green18l + "C47</samp></samp>";
             case (201):
-                return red21u + "C8</samp></samp>," + green18l + "C48</samp></samp>";
+                return green18d + "C5</samp></samp>," + red21u + "C8</samp></samp>," + green18l + "C48</samp></samp>";
             case (202):
-                return red21u + "C9</samp></samp>," + green18l + "C49</samp></samp>";
+                return green18d + "C6</samp></samp>," + red21u + "C9</samp></samp>," + green18l + "C49</samp></samp>";
             case (203):
-                return red21u + "C7.1</samp></samp>," + green18l + "C47.1</samp></samp>";
+                return green18d + "C4.1</samp></samp>," + red21u + "C7.1</samp></samp>," + green18l + "C47.1</samp></samp>";
 
             case (240):
                 return yellow26f + "C57</samp></samp>";
