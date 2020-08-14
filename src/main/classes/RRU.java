@@ -10,6 +10,7 @@ public class RRU extends BTS {
     private final String Sfp_RRU;
     private final double Sfp_RRU_Speed;
     private final String Sfp_Mode;
+    private final int Sfp_Wave_Length;
 
     public RRU(String BTS_name,
                int SubRack_RRU,
@@ -19,7 +20,8 @@ public class RRU extends BTS {
                int Rx_RRU,
                String Sfp_RRU,
                double Sfp_RRU_Speed,
-               String Sfp_Mode) {
+               String Sfp_Mode,
+               int Sfp_Wave_length) {
         super(BTS_name);
         this.SubRack_RRU = SubRack_RRU;
         this.Slot_RRU = Slot_RRU;
@@ -29,6 +31,7 @@ public class RRU extends BTS {
         this.Sfp_RRU = Sfp_RRU;
         this.Sfp_RRU_Speed = Sfp_RRU_Speed;
         this.Sfp_Mode = Sfp_Mode;
+        this.Sfp_Wave_Length = Sfp_Wave_length;
     }
 
     public int getSubRack_RRU() {
@@ -63,6 +66,10 @@ public class RRU extends BTS {
         return Sfp_Mode;
     }
 
+    public int getSfp_Wave_Length() {
+        return Sfp_Wave_Length;
+    }
+
     @Override
     public String display() {
         return "RRU{" +
@@ -74,6 +81,7 @@ public class RRU extends BTS {
                 ", Sfp_RRU='" + Sfp_RRU + '\'' +
                 ", Sfp_RRU_Speed=" + Sfp_RRU_Speed +
                 ", Sfp_Mode='" + Sfp_Mode + '\'' +
+                ", Sfp_Wave_Length=" + Sfp_Wave_Length +
                 '}';
     }
 }

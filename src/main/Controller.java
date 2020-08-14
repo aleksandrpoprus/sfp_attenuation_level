@@ -35,6 +35,7 @@ public class Controller {
     public Button buttonCSV;
     @FXML
     public WebView webView;
+    @FXML
     public WebEngine webEngine;
 
 
@@ -93,7 +94,7 @@ public class Controller {
                 "        .p0 {\n" +
                 "            font-size: 11pt;\n" +
                 "            font-weight: bold;\n" +
-                "            background: royalblue;\n" +
+                "            background: lightblue;\n" +
                 "            text-align: center;\n" +
                 "        }\n" +
                 "\n" +
@@ -102,40 +103,42 @@ public class Controller {
                 "            font-size: 11pt;\n" +
                 "        }\n" +
                 "\n" +
-                "        .samp0 {\n" +
+                "        .samp{\n" +
                 "            font-family: Verdana, Arial, Helvetica, sans-serif;\n" +
-                "            font-size: 11pt;\n" +
                 "            font-weight: bold;\n" +
+                "            font-size: 11pt;\n" +
+                "        }\n" +
+                "\n" +
+                "        .sampGreen {\n" +
+                "\n" +
                 "            color: green;\n" +
                 "        }\n" +
                 "\n" +
-                "        .samp1 {\n" +
-                "            font-family: Verdana, Arial, Helvetica, sans-serif;\n" +
-                "            font-size: 11pt;\n" +
-                "            font-weight: bold;\n" +
+                "        .sampRed {\n" +
+                "\n" +
                 "            color: red;\n" +
                 "        }\n" +
                 "\n" +
-                "        .samp2 {\n" +
-                "            font-family: Verdana, Arial, Helvetica, sans-serif;\n" +
-                "            font-size: 11pt;\n" +
-                "            font-weight: bold;\n" +
+                "        .sampBlue {\n" +
+                "\n" +
                 "            color: blue;\n" +
                 "        }\n" +
                 "\n" +
-                "        .samp3 {\n" +
-                "            font-family: Verdana, Arial, Helvetica, sans-serif;\n" +
-                "            font-size: 11pt;\n" +
-                "            font-weight: bold;\n" +
-                "    color: #ff5900;\n" +
+                "        .sampYellow {\n" +
+                "\n" +
+                "            color: #ff5900;\n" +
                 "        }\n" +
-                ".samp4 {\n" +
-                "    font-family: Verdana, Arial, Helvetica, sans-serif;\n" +
-                "    font-size: 11pt;\n" +
-                "    font-weight: bold;\n" +
-                "    text-transform: uppercase;\n" +
-                "    color: purple;\n" +
-                "}" +
+                "\n" +
+                "        .sampPurple {\n" +
+                "            text-transform: uppercase;\n" +
+                "\n" +
+                "            color: purple;\n" +
+                "        }\n" +
+                "\n" +
+                "        .sampBlack {\n" +
+                "\n" +
+                "            color: black;\n" +
+                "        }\n" +
                 "\n" +
                 "        .div {\n" +
                 "            border: 2px solid black;\n" +

@@ -25,7 +25,8 @@ public class Main extends Application {
         try {
             root = loader.load();
         } catch (NullPointerException | IOException e) {
-            System.out.println("start" + e.getMessage());
+//            System.out.println("start" + e.getMessage());
+            e.printStackTrace();
         }
 
         Controller controller = loader.getController();

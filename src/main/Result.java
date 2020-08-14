@@ -1,5 +1,8 @@
 package main;
 
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+
 public class Result {
 
     private String bts_name;
@@ -22,6 +25,9 @@ public class Result {
     private String sfp_BBU_Mode;
     private String sfp_RRU_Mode;
 
+    private int sfp_BBU_Wave_Length;
+    private int sfp_RRU_Wave_Length;
+
     private String warningGreen, warningRed, warningYellow;
 
     private String TCR;
@@ -43,24 +49,33 @@ public class Result {
                              String sfp_RRU,
                              double sfp_RRU_Speed,
                              String sfp_BBU_Mode,
-                             String sfp_RRU_Mode) {
+                             String sfp_RRU_Mode,
+                             int sfp_BBU_Wave_Length,
+                             int sfp_RRU_Wave_Length) {
 
         this.bts_name = bts_name;
         this.subRack_rru = subRack_rru;
+
         this.slot_bbu = slot_bbu;
         this.port_bbu = port_bbu;
+
         this.tx_bbu = tx_bbu;
         this.rx_rru = rx_rru;
+
         this.rx_bbu = rx_bbu;
         this.tx_rru = tx_rru;
 
         this.sfp_BBU = sfp_BBU;
         this.sfp_BBU_Speed = sfp_BBU_Speed;
+
         this.sfp_RRU = sfp_RRU;
         this.sfp_RRU_Speed = sfp_RRU_Speed;
 
         this.sfp_BBU_Mode = sfp_BBU_Mode;
         this.sfp_RRU_Mode = sfp_RRU_Mode;
+
+        this.sfp_BBU_Wave_Length = sfp_BBU_Wave_Length;
+        this.sfp_RRU_Wave_Length = sfp_RRU_Wave_Length;
     }
 
     public String getBts_name() {
@@ -72,15 +87,16 @@ public class Result {
         difference1 = tx_bbu - rx_rru < 0 ? (tx_bbu - rx_rru) * -1 : tx_bbu - rx_rru;
         difference2 = rx_bbu - tx_rru < 0 ? (rx_bbu - tx_rru) * -1 : rx_bbu - tx_rru;
 
-        warningGreen = "<samp class=\"warningGreen\"> ▲ </samp>";
-        warningRed = "<samp class=\"warningRed\"> ▲ </samp>";
-        warningYellow = "<samp class=\"warningYellow\"> ▲ </samp>";
+        warningGreen = sampSamp("warningGreen", " ▲ ");
+        warningRed = sampSamp("warningRed", " ▲ ");
+        warningYellow = sampSamp("warningYellow", " ▲ ");
 
-        TCR = "<samp data-tooltip=\"Transmission code rate\">TCR</samp>: ";
+        TCR = sampDataTooltip("Transmission code rate", "tcr: ");
 
-        SM = "<samp data-tooltip=\"SINGLEMODE\">SM</samp>";
-        MM = "<samp data-tooltip=\"MULTIMODE\">MM</samp>";
-        NULL = "<samp data-tooltip=\"NULL\">NULL</samp>";
+        SM = sampDataTooltip("SINGLEMODE", "SM");
+        MM = sampDataTooltip("MULTIMODE", "MM");
+        NULL = sampDataTooltip("NULL", "NULL");
+
 
         String s1, s2, s3;
 
@@ -104,7 +120,7 @@ public class Result {
                         "<p class=\"p0\">Затухание ВОЛС:</p>" +
                         "%s%n%s</div>" +
                         "<div>" +
-                        "<p class=\"p0\">Информация по SFP модулям:</p>" +
+                        "<p class=\"p0\">Информация о SFP:</p>" +
                         "%s</div>" +
                         "</div>",
                 details_summary(), s1, s2, s3);
@@ -115,6 +131,114 @@ public class Result {
             return "<details>" + "<summary style=\"text-align: center\">" + i + ": " + result + "</details>";
         }
     }
+
+
+    private @NotNull String sfp_attenuation(boolean b0, boolean b1, boolean b2) {
+
+        String result, TRX1, TRX2, warning = "";
+
+        if (b0) {
+            TRX1 = String.format("Tx= %.2f dbm --", tx_bbu);
+            TRX2 = String.format("--> Rx= %.2f dbm ", rx_rru);
+        } else {
+            TRX1 = String.format("RX= %.2f dbm <--", rx_bbu);
+            TRX2 = String.format("-- TX= %.2f dbm ", tx_rru);
+        }
+
+        result = "BBU(" +
+                sampSamp("samp sampBlack", Integer.toString(slot_bbu)) +
+                ", " +
+                sampSamp("samp sampBlack", Integer.toString(port_bbu)) +
+                ") " +
+                TRX1 +
+                samp_selector(b0, b1, b2) +
+                TRX2 +
+                "RRU (" +
+                sampSamp("samp sampBlack", Integer.toString(subRack_rru)) +
+                ")" +
+                warning +
+                ";";
+        return result;
+    }
+
+    private @NotNull String sfp_info(boolean b0, boolean b1, boolean b2) {
+
+        String s0, s1, mode0, mode1;
+
+        if (b0) {
+            s0 = sampDataTooltip("В RRU sfp c инным TCR", sampSamp("samp sampRed", Double.toString(sfp_BBU_Speed / 10)));
+            s1 = sampDataTooltip("В BBU sfp c инным TCR", sampSamp("samp sampRed", Double.toString(sfp_RRU_Speed / 10)));
+            mode0 = sampSamp("samp sampBlue", sfp_BBU_Mode);
+            mode1 = sampSamp("samp sampBlue", sfp_RRU_Mode);
+        } else if (b1) {
+            s0 = sampDataTooltip("Разные TCR и MODE", sampSamp("samp sampRed", Double.toString(sfp_BBU_Speed / 10)));
+            s1 = sampDataTooltip("Разные TCR и MODE", sampSamp("samp sampRed", Double.toString(sfp_RRU_Speed / 10)));
+            mode0 = sampSamp("samp sampYellow", sfp_BBU_Mode);
+            mode1 = sampSamp("samp sampYellow", sfp_RRU_Mode);
+        } else if (b2) {
+            s0 = sampDataTooltip("Разные TCR и MODE", sampSamp("samp sampRed", Double.toString(sfp_BBU_Speed / 10)));
+            s1 = sampDataTooltip("RRU недоступен!", sampSamp("samp sampRed", NULL));
+            mode0 = sampSamp("samp sampRed", sfp_BBU_Mode);
+            mode1 = sampSamp("samp sampRed", sfp_RRU_Mode);
+        } else {
+            s0 = sampSamp("samp sampBlue", Double.toString(sfp_BBU_Speed / 10));
+            s1 = sampSamp("samp sampBlue", Double.toString(sfp_RRU_Speed / 10));
+            mode0 = sampSamp("samp sampBlue", sfp_BBU_Mode);
+            mode1 = sampSamp("samp sampBlue", sfp_RRU_Mode);
+        }
+
+        String BBU =
+                "BBU(" +
+                        sampSamp("samp sampBlack", Integer.toString(slot_bbu)) +
+                        ", " +
+                        sampSamp("samp sampBlack", Integer.toString(port_bbu)) +
+                        ") " +
+                        sampDataTooltip("Manufacturer name", sampSamp("samp sampPurple", sfp_BBU)) +
+                        "; " +
+                        TCR +
+                        s0 +
+                        " Gbit/s; " +
+                        "mode: " +
+                        mode0 +
+                        ";" +
+                        "</p><p>" +
+                        "wavelength: " +
+                        sampSamp("samp sampBlue", Integer.toString(sfp_BBU_Wave_Length)) +
+                        " nm" +
+                        ";";
+        String RRU =
+                "RRU(" +
+                        sampSamp("samp sampBlack", Integer.toString(subRack_rru)) +
+                        ") " +
+                        sampDataTooltip("Manufacturer name", sampSamp("samp sampPurple", sfp_RRU)) +
+                        "; " +
+                        TCR +
+                        s1 +
+                        " Gbit/s; " +
+                        "mode: " +
+                        mode1 +
+                        ";" +
+                        "</p><p>" +
+                        "wavelength: " +
+                        sampSamp("samp sampBlue", Integer.toString(sfp_RRU_Wave_Length)) +
+                        " nm" +
+                        ";";
+        return BBU + "</p><p>" + RRU;
+    }
+
+    private @NotNull String trx_selector(boolean b0, double difference) {
+
+        if (difference >= 3.9 && difference <= 3.99 || difference >= 4)
+            if (difference >= 4) {
+                return "<p>" + sfp_attenuation(b0, true, false) + "</p>";
+            } else {
+                return "<p>" + sfp_attenuation(b0, true, true) + "</p>";
+            }
+        else {
+            return "<p>" + sfp_attenuation(b0, false, false) + "</p>";
+        }
+    }
+
 
     public String details_summary() {
 
@@ -150,10 +274,17 @@ public class Result {
 
         warningSignal = ws0 || ws1 || ws2;
 
-        return "BBU(" + slot_bbu + ", " + port_bbu + ") " +
+        return "BBU(" +
+                sampSamp("samp sampBlack", Integer.toString(slot_bbu)) +
+                ", " +
+                sampSamp("samp sampBlack", Integer.toString(port_bbu)) +
+                ") " +
                 "<--> " +
-                "RRU(" + subRack_rru +
-                " " + sector_selector(subRack_rru) + ") " +
+                "RRU " +
+                sampSamp("samp sampBlack", Integer.toString(subRack_rru)) +
+                " (" +
+                sector_selector(subRack_rru) +
+                ") " +
                 "trx: " +
                 diff +
                 "tcr: " +
@@ -162,182 +293,50 @@ public class Result {
                 mode;
     }
 
-    private String sfp_attenuation(boolean b0, boolean b1, boolean b2) {
+    private @NotNull String sector_selector(int i) {
 
-        String result, TRX1, TRX2, warning = "";
-
-        if (b0) {
-            TRX1 = String.format("Tx= %.2f dbm --", tx_bbu);
-            TRX2 = String.format("--> Rx= %.2f dbm ", rx_rru);
+        if (i >= 90 && i <= 95) {
+            return sampDataTooltip("GSM-900 МГц", "G");
+        } else if (i >= 100 && i <= 105) {
+            return sampDataTooltip("GSM-900 МГц", "G, ") + sampDataTooltip("LTE-800 МГц", "L");
+        } else if (i >= 180 && i <= 185) {
+            return sampDataTooltip("DSC-1800 МГц", "D");
+        } else if (i >= 200 && i <= 205) {
+            return sampDataTooltip("DSC-1800 МГц", "D, ") + sampDataTooltip("UMTS-2100 МГц", "U, ") + sampDataTooltip("LTE-1800 МГц", "L");
+        } else if (i >= 210 && i <= 215) {
+            return sampDataTooltip("UMTS-2100 МГц", "U");
+        } else if (i >= 230 && i <= 235) {
+            return sampDataTooltip("LTE-2600 МГц TDD", "L");
+        } else if (i >= 240 && i <= 245) {
+            return sampDataTooltip("LTE-2600 МГц FDD", "L");
         } else {
-            TRX1 = String.format("RX= %.2f dbm <--", rx_bbu);
-            TRX2 = String.format("-- TX= %.2f dbm ", tx_rru);
-        }
-
-        result = "BBU(" + slot_bbu + ", " + port_bbu + ") " +
-                TRX1 +
-                samp_selector(b0, b1, b2) +
-                TRX2 +
-                "RRU (" + subRack_rru + ")" +
-                warning +
-                ";";
-        return result;
-    }
-
-    private String sfp_info(boolean b0, boolean b1, boolean b2) {
-
-        String s0, s1, mode0, mode1, warning0 = "", warning1 = "";
-
-        if (b0) {
-            s0 = String.format("<samp data-tooltip=\"В RRU sfp c инным TCR\"><samp class=\"samp1\">%.1f</samp></samp> Gbit/s; ", sfp_BBU_Speed / 10);
-            s1 = String.format("<samp data-tooltip=\"В BBU sfp c инным TCR\"><samp class=\"samp1\">%.1f</samp></samp> Gbit/s; ", sfp_RRU_Speed / 10);
-            mode0 = String.format("<samp class=\"samp2\">%s</samp>", sfp_BBU_Mode);
-            mode1 = String.format("<samp class=\"samp2\">%s</samp>", sfp_RRU_Mode);
-        } else if (b1) {
-            s0 = String.format("<samp data-tooltip=\"Разные TCR и MODE\"><samp class=\"samp1\">%.1f</samp></samp> Gbit/s; ", sfp_BBU_Speed / 10);
-            s1 = String.format("<samp data-tooltip=\"Разные TCR и MODE\"><samp class=\"samp1\">%.1f</samp></samp> Gbit/s; ", sfp_RRU_Speed / 10);
-            mode0 = String.format("<samp class=\"samp3\">%s</samp>", sfp_BBU_Mode);
-            mode1 = String.format("<samp class=\"samp3\">%s</samp>", sfp_RRU_Mode);
-        } else if (b2) {
-            s0 = String.format("<samp data-tooltip=\"Разные TCR и MODE\"><samp class=\"samp1\">%.1f</samp></samp> Gbit/s; ", sfp_BBU_Speed / 10);
-            s1 = String.format("<samp data-tooltip=\"RRU недоступен!\"><samp class=\"samp1\">%s</samp></samp> Gbit/s; ", NULL);
-            mode0 = String.format("<samp class=\"samp1\">%s</samp>", sfp_BBU_Mode);
-            mode1 = String.format("<samp class=\"samp1\">%s</samp>", sfp_RRU_Mode);
-        } else {
-            s0 = String.format("<samp class=\"samp2\">%.1f</samp> Gbit/s; ", sfp_BBU_Speed / 10);
-            s1 = String.format("<samp class=\"samp2\">%.1f</samp> Gbit/s; ", sfp_RRU_Speed / 10);
-            mode0 = String.format("<samp class=\"samp2\">%s</samp>", sfp_BBU_Mode);
-            mode1 = String.format("<samp class=\"samp2\">%s</samp>", sfp_RRU_Mode);
-        }
-
-        String BBU =
-                "BBU(" + slot_bbu + ", " + port_bbu + ") " +
-                        "<samp class=\"samp4\"><samp data-tooltip=\"Manufacturer name\">" + sfp_BBU + "</samp></samp>; " +
-                        TCR +
-                        s0 +
-                        "mode: " +
-                        mode0 +
-                        warning0 +
-                        ";" +
-                        "</p>\n";
-        String RRU =
-                "<p>" +
-                        "RRU(" + subRack_rru + ") - " +
-                        "<samp class=\"samp4\"><samp data-tooltip=\"Manufacturer name\">" + sfp_RRU + "</samp></samp>; " +
-                        TCR +
-                        s1 +
-                        "mode: " +
-                        mode1 +
-                        ";" +
-                        warning1;
-        return BBU + RRU;
-    }
-
-    private String trx_selector(boolean b0, double difference) {
-
-        if (difference >= 3.9 && difference <= 3.99 || difference >= 4)
-            if (difference >= 4) {
-                return "<p>" + sfp_attenuation(b0, true, false) + "</p>";
-            } else {
-                return "<p>" + sfp_attenuation(b0, true, true) + "</p>";
-            }
-        else {
-            return "<p>" + sfp_attenuation(b0, false, false) + "</p>";
+            return "";
         }
     }
 
-    private String sector_selector(int i) {
-
-        String blue9g = "<samp data-tooltip=\"GSM-900 МГц\"><samp class=\"samp2\">";
-        String yellow9l = "<samp data-tooltip=\"LTE-800 МГц\"><samp class=\"samp3\">";
-        String green18d = "<samp data-tooltip=\"DSC-1800 МГц\"><samp class=\"samp0\">";
-        String green18l = "<samp data-tooltip=\"LTE-1800 МГц\"><samp class=\"samp0\">";
-        String red21u = "<samp data-tooltip=\"UMTS-2100 МГц\"><samp class=\"samp1\">";
-        String yellow26f = "<samp data-tooltip=\"LTE-2600 МГц FDD\"><samp class=\"samp3\">";
-        String yellow26t = "<samp data-tooltip=\"LTE-2600 МГц TDD\"><samp class=\"samp3\">";
-
-
-        switch (i) {
-            case (90):
-                return blue9g + "C1</samp></samp>";
-            case (91):
-                return blue9g + "C2</samp></samp>";
-            case (92):
-                return blue9g + "C3</samp></samp>";
-            case (93):
-                return blue9g + "C1.1</samp></samp>";
-
-            case (100):
-                return blue9g + "C1</samp></samp>," + yellow9l + "C37</samp></samp>";
-            case (101):
-                return blue9g + "C2</samp></samp>," + yellow9l + "C38</samp></samp>";
-            case (102):
-                return blue9g + "C3</samp></samp>," + yellow9l + "C39</samp></samp>";
-            case (103):
-                return blue9g + "C1.1</samp></samp>," + yellow9l + "C37.1</samp></samp>";
-
-            case (180):
-                return green18d + "C4</samp></samp>";
-            case (181):
-                return green18d + "C5</samp></samp>";
-            case (182):
-                return green18d + "C6</samp></samp>";
-            case (183):
-                return green18d + "C4.1</samp></samp>";
-
-            case (210):
-                return red21u + "C7</samp></samp>";
-            case (211):
-                return red21u + "C8</samp></samp>";
-            case (212):
-                return red21u + "C9</samp></samp>";
-            case (213):
-                return red21u + "C7.1</samp></samp>";
-
-            case (200):
-                return green18d + "C4</samp></samp>," + red21u + "C7</samp></samp>," + green18l + "C47</samp></samp>";
-            case (201):
-                return green18d + "C5</samp></samp>," + red21u + "C8</samp></samp>," + green18l + "C48</samp></samp>";
-            case (202):
-                return green18d + "C6</samp></samp>," + red21u + "C9</samp></samp>," + green18l + "C49</samp></samp>";
-            case (203):
-                return green18d + "C4.1</samp></samp>," + red21u + "C7.1</samp></samp>," + green18l + "C47.1</samp></samp>";
-
-            case (240):
-                return yellow26f + "C57</samp></samp>";
-            case (241):
-                return yellow26f + "C58</samp></samp>";
-            case (242):
-                return yellow26f + "C59</samp></samp>";
-            case (243):
-                return yellow26f + "C57.1</samp></samp>";
-
-            case (230):
-                return yellow26t + "C77</samp></samp>";
-            case (231):
-                return yellow26t + "C78</samp></samp>";
-            case (232):
-                return yellow26t + "C79</samp></samp>";
-            case (233):
-                return yellow26t + "C77.1</samp></samp>";
-            default:
-                return "</samp>";
-
-        }
-    }
-
-    private String samp_selector(boolean b0, boolean b1, boolean b2) {
+    private @NotNull String samp_selector(boolean b0, boolean b1, boolean b2) {
 
         double difference = b0 ? difference1 : difference2;
 
         if (b1) {
             if (b2) {
-                return String.format("(<samp class=\"samp3\" data-tooltip=\"Уровень затухания близок к превышению!\">%.2f</samp> dbm)", difference);
+                return sampDataTooltip("Уровень затухания близок к превышению!", sampSamp("samp sampYellow", String.format("%.2f", difference))) + " dbm";
             } else {
-                return String.format("(<samp class=\"samp1\" data-tooltip=\"Превышение уровня затухания! %.2f > 4 dbm\">%.2f</samp> dbm)", difference, difference);
+                return sampDataTooltip("Превышение уровня затухания!" + String.format("%.2f > 4 dbm", difference), sampSamp("samp sampRed", String.format("%.2f", difference))) + " dbm";
             }
         } else {
-            return String.format("(<samp class=\"samp0\">%.2f</samp> dbm)", difference);
+            return sampSamp("samp sampGreen", String.format("%.2f", difference)) + " dbm";
         }
+    }
+
+
+    @Contract(pure = true)
+    private @NotNull String sampSamp(String css_class, String s) {
+        return "<samp class=\"" + css_class + "\">" + s + "</samp>";
+    }
+
+    @Contract(pure = true)
+    private @NotNull String sampDataTooltip(String s0, String s1) {
+        return "<samp data-tooltip=\"" + s0 + "\">" + s1 + "</samp>";
     }
 }
