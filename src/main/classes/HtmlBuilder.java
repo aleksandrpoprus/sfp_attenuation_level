@@ -19,7 +19,7 @@ public class HtmlBuilder {
 
         return "<details>" +
                 "<summary style=\"text-align: center\"><samp class=\"samp sampBlack\">Как это работает?</samp></summary>" +
-                "<div><p class=\"p1\">1. В u2020 во вкладке Maintenance выбрать \"MML command\"." +
+                "<div><p class=\"p1\">1. В u2020 во вкладке Maintenance выбрать \"MML Command\"." +
                 "<p class=\"p1\">2. Слева в дереве NE выбрать БС(можно несколько)." +
                 "<p class=\"p1\">3. Выполнить в консоли DSP SFP и LST RRUCHAIN." +
                 "<p class=\"p1\">4. Экспортировать результат в формате .csv" +
@@ -198,7 +198,6 @@ public class HtmlBuilder {
 
         return BBU + "</p><p>" + RRU;
     }
-
     public String AAA(String SUB, String MN, String TCR, String s, String mode, String WL) {
         return SUB +
                 MN + "; " +

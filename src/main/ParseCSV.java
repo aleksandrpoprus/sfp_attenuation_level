@@ -15,10 +15,10 @@ import java.util.stream.Collectors;
 
 class ParseCSV {
 
-    private static final String REGEX_HEAD = "^(?:\\[BTS)\\w+]";
-    private static final String REGEX_DSP_SFP_BBU_SIDE = "^[\\[](?:[0],[ ]+(?:[0]),[ ]+[0-5],[ ]+[C-R]+,[ ]+[0-5],[ ]+(?:[\\w]+,[ ]+|[A-z]+ [A-z,.]+,[ ]+){22}(-?\\d+,[ ]+){6})[]]";
-    private static final String REGEX_DSP_SFP_RRU_SIDE = "^[\\[](?:[0],[ ]+(?:[\\d][0-9]|[\\d][0-8][0-5]),[ ]+[0-5],[ ]+[C-R]+,[ ]+[0-5],[ ]+(?:[\\w]+,[ ]+|[A-z]+ [A-z,.]+,[ ]+){22}(-?\\d+,[ ]+){6})[]]";
-    private static final String REGEX_LST_RRUCHAIN = "^[\\[](?:[\\d][0-9]|[\\d][0-8][0-5]),[ ]+(?:[\\w]+,[ ]+){2}(?:[\\d],[ ]+){5}(?:(?:[\\w]+|[\\w]+ [\\w]+),[ ]+){13}[0-9,A-Z\\-]+,[ ]+[\\w]+,[ ]+[0-9,.:A-Z&]+,[ ]+(?:[\\w]+,[ ]+){2}[]]";
+    private static final String REGEX_HEAD = "(?:BTS)\\w+";
+    private static final String REGEX_DSP_SFP_BBU_SIDE = "(?:[0],[ ]+(?:[0]),[ ]+[0-5],[ ]+[C-R]+,[ ]+[0-5],[ ]+(?:[\\w]+,[ ]+|[A-z]+ [A-z,.]+,[ ]+){22}(-?\\d+,[ ]+){6})";
+    private static final String REGEX_DSP_SFP_RRU_SIDE = "(?:[0],[ ]+(?:[\\d][0-9]|[\\d][0-8][0-5]),[ ]+[0-5],[ ]+[C-R]+,[ ]+[0-5],[ ]+(?:[\\w]+,[ ]+|[A-z]+ [A-z,.]+,[ ]+){22}(-?\\d+,[ ]+){6})";
+    private static final String REGEX_LST_RRUCHAIN = "(?:[\\d]|[\\d][0-9]|[\\d][0-8][0-5]),[ ]+(?:[\\w]+,[ ]+){2}(?:[\\d],[ ]+){5}(?:(?:[\\w]+|[\\w]+ [\\w]+),[ ]+){13}[0-9,A-Z\\-]+,[ ]+[\\w]+,[ ]+[0-9,.:A-Z&]+,[ ]+(?:[\\w]+,[ ]+){2}";
 
     private static final String SM = "<samp data-tooltip=\"SINGLEMODE\">SM</samp>";
     private static final String MM = "<samp data-tooltip=\"MULTIMODE\">MM</samp>";
@@ -54,7 +54,12 @@ class ParseCSV {
     private static int slotRRU_lst;
     private static int portRRU_lst;
 
-    static void main(String args) {
+    private static String REGEX(String regex){
+        return String.format("^[\\[]%s[]]",regex);
+    }
+
+
+    public static void main(String args) {
 
         arrResult.clear();
         arrScanDoc.clear();
@@ -111,7 +116,7 @@ class ParseCSV {
         /*Устанавливаем заголовок*/
         List<String> set = arrScanDoc.stream().distinct().collect(Collectors.toList());
         for (String s : set) {
-            if (Pattern.matches(REGEX_HEAD, s)) {
+            if (Pattern.matches(REGEX(REGEX_HEAD), s)) {
                 String head = "<div class=\"div1\"><h1>" + s + "</h1>\n";
                 RESULT.add(head);
 
@@ -277,7 +282,7 @@ class ParseCSV {
 
     private static void itIsSideBBU(String[] row) {
         String s = Arrays.toString(row);
-        if (Pattern.matches(REGEX_DSP_SFP_BBU_SIDE, s)) {
+        if (Pattern.matches(REGEX(REGEX_DSP_SFP_BBU_SIDE), s)) {
             BBU_Port bbuPorts = new BBU_Port(BTS_name, subRack(row,true), slot(row,true), port(row,true),
                     tx(row), rx(row),
                     sfp_manufacturer_name(row), sfp_speed(row), sfp_mode(row), sfp_wave_length(row));
@@ -287,7 +292,7 @@ class ParseCSV {
 
     private static void itIsSideRRU(String[] row) {
         String s = Arrays.toString(row);
-        if (Pattern.matches(REGEX_DSP_SFP_RRU_SIDE, s)) {
+        if (Pattern.matches(REGEX(REGEX_DSP_SFP_RRU_SIDE), s)) {
             RRU rru = new RRU(BTS_name, subRack(row,true), slot(row,true), port(row,true), tx(row), rx(row),
                     sfp_manufacturer_name(row), sfp_speed(row), sfp_mode(row), sfp_wave_length(row));
             dsp_sfp.setRRU(rru);
@@ -296,7 +301,7 @@ class ParseCSV {
 
     private static void ifChainNo(String[] row) {
         String s = Arrays.toString(row);
-        if (Pattern.matches(REGEX_LST_RRUCHAIN, s)) {
+        if (Pattern.matches(REGEX(REGEX_LST_RRUCHAIN), s)) {
             RRU rru = new RRU(BTS_name, subRack(row,false), slot(row,false), port(row,false),
                     0, 0,
                     null, 0, null, 0);
