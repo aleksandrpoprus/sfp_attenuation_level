@@ -10,6 +10,7 @@ import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import main.classes.HtmlBuilder;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -39,12 +40,10 @@ public class Controller {
     public WebEngine webEngine;
 
 
-    public Controller() {
-    }
+    public Controller() {}
 
     @FXML
-    private void initialize() {
-    }
+    private void initialize() {}
 
     private void printLog(List<File> files) {
         if (files == null || files.isEmpty()) {
@@ -66,156 +65,19 @@ public class Controller {
             for (String string : strings) {
                 body.append(string);
             }
-            htmlBuilder();
+            html();
         }
     }
 
-    private void htmlBuilder() {
+    public void goHtmlHow() {
+        String html = new HtmlBuilder(body).htmlBuilderHow();
+        webEngine.loadContent(html);
+    }
 
-        String header = "<!DOCTYPE html>\n" +
-                "<html lang=\"ru\">\n" +
-                "<head>\n" +
-                "    <meta charset=\"utf-8\">\n" +
-                "    <title>sfp_attenuation_level</title>\n" +
-                "    <style>\n" +
-                "        h1 {\n" +
-                "            font-family: Verdana, Arial, Helvetica, sans-serif;\n" +
-                "            font-size: 12pt;\n" +
-                "            font-weight: bold;\n" +
-                "            text-align: center;\n" +
-                "        }\n" +
-                "\n" +
-                "        p {\n" +
-                "            font-family: Verdana, Arial, Helvetica, sans-serif;\n" +
-                "            font-size: 11pt;\n" +
-                "            text-align: left;\n" +
-                "        }\n" +
-                "\n" +
-                "        .p0 {\n" +
-                "            font-size: 11pt;\n" +
-                "            font-weight: bold;\n" +
-                "            background: lightblue;\n" +
-                "            text-align: center;\n" +
-                "        }\n" +
-                "\n" +
-                "        samp {\n" +
-                "            font-family: Verdana, Arial, Helvetica, sans-serif;\n" +
-                "            font-size: 11pt;\n" +
-                "        }\n" +
-                "\n" +
-                "        .samp{\n" +
-                "            font-family: Verdana, Arial, Helvetica, sans-serif;\n" +
-                "            font-weight: bold;\n" +
-                "            font-size: 11pt;\n" +
-                "        }\n" +
-                "\n" +
-                "        .sampGreen {\n" +
-                "\n" +
-                "            color: green;\n" +
-                "        }\n" +
-                "\n" +
-                "        .sampRed {\n" +
-                "\n" +
-                "            color: red;\n" +
-                "        }\n" +
-                "\n" +
-                "        .sampBlue {\n" +
-                "\n" +
-                "            color: blue;\n" +
-                "        }\n" +
-                "\n" +
-                "        .sampYellow {\n" +
-                "\n" +
-                "            color: #ff5900;\n" +
-                "        }\n" +
-                "\n" +
-                "        .sampPurple {\n" +
-                "            text-transform: uppercase;\n" +
-                "\n" +
-                "            color: purple;\n" +
-                "        }\n" +
-                "\n" +
-                "        .sampBlack {\n" +
-                "\n" +
-                "            color: black;\n" +
-                "        }\n" +
-                "\n" +
-                "        .div {\n" +
-                "            border: 2px solid black;\n" +
-                "            background-color: lavender;\n" +
-                "            padding: .2rem;\n" +
-                "            display: compact;\n" +
-                "            flex-direction: column;\n" +
-                "        }\n" +
-                "\n" +
-                "        .warningGreen {\n" +
-                "            font-size: 14pt;\n" +
-                "            color: green;\n" +
-                "        }\n" +
-                "\n" +
-                "        .warningRed {\n" +
-                "            font-size: 14pt;\n" +
-                "            color: red;\n" +
-                "        }\n" +
-                "\n" +
-                "        .warningYellow {\n" +
-                "            font-size: 14pt;\n" +
-                "            color: #ff5900;\n" +
-                "        }\n" +
-                "\n" +
-                "        [data-tooltip] {\n" +
-                "            position: relative;\n" +
-                "        }\n" +
-                "\n" +
-                "        [data-tooltip]::after {\n" +
-                "            content: attr(data-tooltip);\n" +
-                "            position: absolute;\n" +
-                "            text-align: center;\n" +
-                "            font-size: 9pt;\n" +
-                "            white-space: nowrap;\n" +
-                "            width: auto;\n" +
-                "            font-weight: bold;\n" +
-                "            left: 0;\n" +
-                "            top: 0;\n" +
-                "            background: ghostwhite;\n" +
-                "            color: black;\n" +
-                "            padding: 0.2em;\n" +
-                "            pointer-events: none;\n" +
-                "            opacity: 0;\n" +
-                "            transition: 0.5s;\n" +
-                "        }\n" +
-                "\n" +
-                "        [data-tooltip]:hover::after {\n" +
-                "            opacity: 1.0;\n" +
-                "            top: 1em;\n" +
-                "            left: -2em;\n" +
-                "        }\n" +
-                "\n" +
-                "        details[open] div {\n" +
-                "            animation: spoiler 0.5s;\n" +
-                "        }\n" +
-                "\n" +
-                "        @keyframes spoiler {\n" +
-                "            0% {\n" +
-                "                opacity: 0;\n" +
-                "            }\n" +
-                "            100% {\n" +
-                "                opacity: 1;\n" +
-                "            }\n" +
-                "        }\n" +
-                "    </style>\n" +
-                "</head>\n" +
-                "<body>\n";
-        String footer = "</body>\n" +
-                "<footer>\n" +
-                "</footer>\n" +
-                "</html>";
-
-        String html = header + body.toString() + footer;
-
+    public void html() {
+        String html = new HtmlBuilder(body).htmlBuilder();
         webEngine.loadContent(html);
         System.out.println(html);
-
     }
 
     public void onDragDropped(@NotNull DragEvent dragEvent) {

@@ -2,64 +2,64 @@ package main.classes;
 
 public class RRU extends BTS {
 
-    private final int SubRack_RRU;
-    private final int Slot_RRU;
-    private final int Port_RRU;
-    private final int Tx_RRU;
-    private final int Rx_RRU;
-    private final String Sfp_RRU;
-    private final double Sfp_RRU_Speed;
+    private final int SubRack;
+    private final int Slot;
+    private final int Port;
+    private final int Tx;
+    private final int Rx;
+    private final String SfpManufacturerName;
+    private final int Sfp_Speed;
     private final String Sfp_Mode;
     private final int Sfp_Wave_Length;
 
     public RRU(String BTS_name,
-               int SubRack_RRU,
-               int Slot_RRU,
-               int Port_RRU,
-               int Tx_RRU,
-               int Rx_RRU,
-               String Sfp_RRU,
-               double Sfp_RRU_Speed,
+               int SubRack,
+               int Slot,
+               int Port,
+               int Tx,
+               int Rx,
+               String SfpManufacturerName,
+               int Sfp_Speed,
                String Sfp_Mode,
                int Sfp_Wave_length) {
         super(BTS_name);
-        this.SubRack_RRU = SubRack_RRU;
-        this.Slot_RRU = Slot_RRU;
-        this.Port_RRU = Port_RRU;
-        this.Tx_RRU = Tx_RRU;
-        this.Rx_RRU = Rx_RRU;
-        this.Sfp_RRU = Sfp_RRU;
-        this.Sfp_RRU_Speed = Sfp_RRU_Speed;
+        this.SubRack = SubRack;
+        this.Slot = Slot;
+        this.Port = Port;
+        this.Tx = Tx;
+        this.Rx = Rx;
+        this.SfpManufacturerName = SfpManufacturerName;
+        this.Sfp_Speed = Sfp_Speed;
         this.Sfp_Mode = Sfp_Mode;
         this.Sfp_Wave_Length = Sfp_Wave_length;
     }
 
-    public int getSubRack_RRU() {
-        return SubRack_RRU;
+    public int getSubRack() {
+        return SubRack;
     }
 
-    public int getSlot_RRU() {
-        return Slot_RRU;
+    public int getSlot() {
+        return Slot;
     }
 
-    public int getPort_RRU() {
-        return Port_RRU;
+    public int getPort() {
+        return Port;
     }
 
-    public int getTx_RRU() {
-        return Tx_RRU;
+    public int getTx() {
+        return Tx;
     }
 
-    public int getRx_RRU() {
-        return Rx_RRU;
+    public int getRx() {
+        return Rx;
     }
 
-    public String getSfp_RRU() {
-        return Sfp_RRU;
+    public String getSfpManufacturerName() {
+        return SfpManufacturerName;
     }
 
-    public double getSfp_RRU_Speed() {
-        return Sfp_RRU_Speed;
+    public int getSfp_Speed() {
+        return Sfp_Speed;
     }
 
     public String getSfp_Mode() {
@@ -73,13 +73,13 @@ public class RRU extends BTS {
     @Override
     public String display() {
         return "RRU{" +
-                "SubRack_RRU=" + SubRack_RRU +
-                ", Slot_RRU=" + Slot_RRU +
-                ", Port_RRU=" + Port_RRU +
-                ", Tx_RRU=" + Tx_RRU +
-                ", Rx_RRU=" + Rx_RRU +
-                ", Sfp_RRU='" + Sfp_RRU + '\'' +
-                ", Sfp_RRU_Speed=" + Sfp_RRU_Speed +
+                "SubRack_RRU=" + SubRack +
+                ", Slot_RRU=" + Slot +
+                ", Port_RRU=" + Port +
+                ", Tx_RRU=" + Tx +
+                ", Rx_RRU=" + Rx +
+                ", Sfp_RRU='" + SfpManufacturerName + '\'' +
+                ", Sfp_RRU_Speed=" + Sfp_Speed +
                 ", Sfp_Mode='" + Sfp_Mode + '\'' +
                 ", Sfp_Wave_Length=" + Sfp_Wave_Length +
                 '}';

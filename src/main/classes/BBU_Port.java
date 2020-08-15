@@ -2,64 +2,64 @@ package main.classes;
 
 public class BBU_Port extends BTS {
 
-    private final int SubRack_BBU;
-    private final int Slot_BBU;
-    private final int Port_BBU;
-    private final int Tx_BBU;
-    private final int Rx_BBU;
-    private final String Sfp_BBU;
-    private final double Sfp_BBU_Speed;
+    private final int SubRack;
+    private final int Slot;
+    private final int Port;
+    private final int Tx;
+    private final int Rx;
+    private final String SfpManufacturerName;
+    private final int Sfp_Speed;
     private final String Sfp_Mode;
     private final int Sfp_Wave_Length;
 
     public BBU_Port(String BTS_name,
-                    int SubRack_BBU,
-                    int Slot_BBU,
-                    int Port_BBU,
-                    int Tx_BBU,
-                    int Rx_BBU,
-                    String Sfp_BBU,
-                    double Sfp_BBU_Speed,
+                    int SubRack,
+                    int Slot,
+                    int Port,
+                    int Tx,
+                    int Rx,
+                    String SfpManufacturerName,
+                    int Sfp_Speed,
                     String Sfp_Mode,
                     int Sfp_Wave_length) {
         super(BTS_name);
-        this.SubRack_BBU = SubRack_BBU;
-        this.Slot_BBU = Slot_BBU;
-        this.Port_BBU = Port_BBU;
-        this.Tx_BBU = Tx_BBU;
-        this.Rx_BBU = Rx_BBU;
-        this.Sfp_BBU = Sfp_BBU;
-        this.Sfp_BBU_Speed = Sfp_BBU_Speed;
+        this.SubRack = SubRack;
+        this.Slot = Slot;
+        this.Port = Port;
+        this.Tx = Tx;
+        this.Rx = Rx;
+        this.SfpManufacturerName = SfpManufacturerName;
+        this.Sfp_Speed = Sfp_Speed;
         this.Sfp_Mode = Sfp_Mode;
         this.Sfp_Wave_Length = Sfp_Wave_length;
     }
 
-    public int getSubRack_BBU() {
-        return SubRack_BBU;
+    public int getSubRack() {
+        return SubRack;
     }
 
-    public int getSlot_BBU() {
-        return Slot_BBU;
+    public int getSlot() {
+        return Slot;
     }
 
-    public int getPort_BBU() {
-        return Port_BBU;
+    public int getPort() {
+        return Port;
     }
 
-    public int getTx_BBU() {
-        return Tx_BBU;
+    public int getTx() {
+        return Tx;
     }
 
-    public int getRx_BBU() {
-        return Rx_BBU;
+    public int getRx() {
+        return Rx;
     }
 
-    public String getSfp_BBU() {
-        return Sfp_BBU;
+    public String getSfpManufacturerName() {
+        return SfpManufacturerName;
     }
 
-    public double getSfp_BBU_Speed() {
-        return Sfp_BBU_Speed;
+    public int getSfp_Speed() {
+        return Sfp_Speed;
     }
 
     public String getSfp_Mode() {
@@ -73,13 +73,13 @@ public class BBU_Port extends BTS {
     @Override
     public String display() {
         return "BBU_Port{" +
-                "SubRack_BBU=" + SubRack_BBU +
-                ", Slot_BBU=" + Slot_BBU +
-                ", Port_BBU=" + Port_BBU +
-                ", Tx_BBU=" + Tx_BBU +
-                ", Rx_BBU=" + Rx_BBU +
-                ", Sfp_BBU='" + Sfp_BBU + '\'' +
-                ", Sfp_BBU_Speed=" + Sfp_BBU_Speed +
+                "SubRack_BBU=" + SubRack +
+                ", Slot_BBU=" + Slot +
+                ", Port_BBU=" + Port +
+                ", Tx_BBU=" + Tx +
+                ", Rx_BBU=" + Rx +
+                ", Sfp_BBU='" + SfpManufacturerName + '\'' +
+                ", Sfp_BBU_Speed=" + Sfp_Speed +
                 ", Sfp_Mode='" + Sfp_Mode + '\'' +
                 ", Sfp_Wave_Length=" + Sfp_Wave_Length +
                 '}';

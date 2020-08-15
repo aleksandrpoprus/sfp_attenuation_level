@@ -1,4 +1,4 @@
-package main;
+package main.classes;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -39,15 +39,15 @@ public class Result {
     public void setForResult(String bts_name,
                              int slot_bbu,
                              int port_bbu,
-                             double tx_bbu,
-                             double rx_bbu,
+                             int tx_bbu,
+                             int rx_bbu,
                              int subRack_rru,
-                             double tx_rru,
-                             double rx_rru,
+                             int tx_rru,
+                             int rx_rru,
                              String sfp_BBU,
-                             double sfp_BBU_Speed,
+                             int sfp_BBU_Speed,
                              String sfp_RRU,
-                             double sfp_RRU_Speed,
+                             int sfp_RRU_Speed,
                              String sfp_BBU_Mode,
                              String sfp_RRU_Mode,
                              int sfp_BBU_Wave_Length,
@@ -59,23 +59,23 @@ public class Result {
         this.slot_bbu = slot_bbu;
         this.port_bbu = port_bbu;
 
-        this.tx_bbu = tx_bbu;
-        this.rx_rru = rx_rru;
+        this.tx_bbu = tx_bbu * 0.01;
+        this.rx_rru = rx_rru * 0.01;
 
-        this.rx_bbu = rx_bbu;
-        this.tx_rru = tx_rru;
+        this.rx_bbu = rx_bbu * 0.01;
+        this.tx_rru = tx_rru * 0.01;
 
         this.sfp_BBU = sfp_BBU;
-        this.sfp_BBU_Speed = sfp_BBU_Speed;
+        this.sfp_BBU_Speed = sfp_BBU_Speed * 0.1;
 
         this.sfp_RRU = sfp_RRU;
-        this.sfp_RRU_Speed = sfp_RRU_Speed;
+        this.sfp_RRU_Speed = sfp_RRU_Speed * 0.1;
 
         this.sfp_BBU_Mode = sfp_BBU_Mode;
         this.sfp_RRU_Mode = sfp_RRU_Mode;
 
-        this.sfp_BBU_Wave_Length = sfp_BBU_Wave_Length;
-        this.sfp_RRU_Wave_Length = sfp_RRU_Wave_Length;
+        this.sfp_BBU_Wave_Length = sfp_BBU_Wave_Length / 100;
+        this.sfp_RRU_Wave_Length = sfp_RRU_Wave_Length / 100;
     }
 
     public String getBts_name() {
@@ -84,8 +84,8 @@ public class Result {
 
     public String getResult(int i) {
 
-        difference1 = tx_bbu - rx_rru < 0 ? (tx_bbu - rx_rru) * -1 : tx_bbu - rx_rru;
-        difference2 = rx_bbu - tx_rru < 0 ? (rx_bbu - tx_rru) * -1 : rx_bbu - tx_rru;
+        difference1 = (tx_bbu - rx_rru < 0 ? (tx_bbu - rx_rru) * -1 : tx_bbu - rx_rru);
+        difference2 = (rx_bbu - tx_rru < 0 ? (rx_bbu - tx_rru) * -1 : rx_bbu - tx_rru);
 
         warningGreen = sampSamp("warningGreen", " ▲ ");
         warningRed = sampSamp("warningRed", " ▲ ");
@@ -135,7 +135,7 @@ public class Result {
 
     private @NotNull String sfp_attenuation(boolean b0, boolean b1, boolean b2) {
 
-        String result, TRX1, TRX2, warning = "";
+        String BBU_slot, BBU_port, TRX1, TRXd, TRX2, RRU_sub;
 
         if (b0) {
             TRX1 = String.format("Tx= %.2f dbm --", tx_bbu);
@@ -145,20 +145,12 @@ public class Result {
             TRX2 = String.format("-- TX= %.2f dbm ", tx_rru);
         }
 
-        result = "BBU(" +
-                sampSamp("samp sampBlack", Integer.toString(slot_bbu)) +
-                ", " +
-                sampSamp("samp sampBlack", Integer.toString(port_bbu)) +
-                ") " +
-                TRX1 +
-                samp_selector(b0, b1, b2) +
-                TRX2 +
-                "RRU (" +
-                sampSamp("samp sampBlack", Integer.toString(subRack_rru)) +
-                ")" +
-                warning +
-                ";";
-        return result;
+        BBU_slot = sampSamp("samp sampBlack", Integer.toString(slot_bbu));
+        BBU_port = sampSamp("samp sampBlack", Integer.toString(port_bbu));
+        TRXd = samp_selector(b0, b1, b2);
+        RRU_sub = sampSamp("samp sampBlack", Integer.toString(subRack_rru));
+
+        return new HtmlBuilder().vols_attenuation_content(BBU_slot, BBU_port, TRX1, TRXd, TRX2, RRU_sub);
     }
 
     private @NotNull String sfp_info(boolean b0, boolean b1, boolean b2) {
@@ -166,64 +158,41 @@ public class Result {
         String s0, s1, mode0, mode1;
 
         if (b0) {
-            s0 = sampDataTooltip("В RRU sfp c инным TCR", sampSamp("samp sampRed", Double.toString(sfp_BBU_Speed / 10)));
-            s1 = sampDataTooltip("В BBU sfp c инным TCR", sampSamp("samp sampRed", Double.toString(sfp_RRU_Speed / 10)));
+            s0 = sampDataTooltip("В RRU sfp c инным TCR", sampSamp("samp sampRed", String.format("%.1f",sfp_BBU_Speed)));
+            s1 = sampDataTooltip("В BBU sfp c инным TCR", sampSamp("samp sampRed", String.format("%.1f",sfp_RRU_Speed)));
             mode0 = sampSamp("samp sampBlue", sfp_BBU_Mode);
             mode1 = sampSamp("samp sampBlue", sfp_RRU_Mode);
         } else if (b1) {
-            s0 = sampDataTooltip("Разные TCR и MODE", sampSamp("samp sampRed", Double.toString(sfp_BBU_Speed / 10)));
-            s1 = sampDataTooltip("Разные TCR и MODE", sampSamp("samp sampRed", Double.toString(sfp_RRU_Speed / 10)));
+            s0 = sampDataTooltip("Разные TCR и MODE", sampSamp("samp sampRed", String.format("%.1f",sfp_BBU_Speed)));
+            s1 = sampDataTooltip("Разные TCR и MODE", sampSamp("samp sampRed", String.format("%.1f",sfp_RRU_Speed)));
             mode0 = sampSamp("samp sampYellow", sfp_BBU_Mode);
             mode1 = sampSamp("samp sampYellow", sfp_RRU_Mode);
         } else if (b2) {
-            s0 = sampDataTooltip("Разные TCR и MODE", sampSamp("samp sampRed", Double.toString(sfp_BBU_Speed / 10)));
+            s0 = sampDataTooltip("Разные TCR и MODE", sampSamp("samp sampRed", String.format("%.1f",sfp_BBU_Speed)));
             s1 = sampDataTooltip("RRU недоступен!", sampSamp("samp sampRed", NULL));
             mode0 = sampSamp("samp sampRed", sfp_BBU_Mode);
             mode1 = sampSamp("samp sampRed", sfp_RRU_Mode);
         } else {
-            s0 = sampSamp("samp sampBlue", Double.toString(sfp_BBU_Speed / 10));
-            s1 = sampSamp("samp sampBlue", Double.toString(sfp_RRU_Speed / 10));
+            s0 = sampSamp("samp sampBlue", String.format("%.1f",sfp_BBU_Speed));
+            s1 = sampSamp("samp sampBlue", String.format("%.1f",sfp_RRU_Speed));
             mode0 = sampSamp("samp sampBlue", sfp_BBU_Mode);
             mode1 = sampSamp("samp sampBlue", sfp_RRU_Mode);
         }
 
-        String BBU =
-                "BBU(" +
-                        sampSamp("samp sampBlack", Integer.toString(slot_bbu)) +
-                        ", " +
-                        sampSamp("samp sampBlack", Integer.toString(port_bbu)) +
-                        ") " +
-                        sampDataTooltip("Manufacturer name", sampSamp("samp sampPurple", sfp_BBU)) +
-                        "; " +
-                        TCR +
-                        s0 +
-                        " Gbit/s; " +
-                        "mode: " +
-                        mode0 +
-                        ";" +
-                        "</p><p>" +
-                        "wavelength: " +
-                        sampSamp("samp sampBlue", Integer.toString(sfp_BBU_Wave_Length)) +
-                        " nm" +
-                        ";";
-        String RRU =
-                "RRU(" +
-                        sampSamp("samp sampBlack", Integer.toString(subRack_rru)) +
-                        ") " +
-                        sampDataTooltip("Manufacturer name", sampSamp("samp sampPurple", sfp_RRU)) +
-                        "; " +
-                        TCR +
-                        s1 +
-                        " Gbit/s; " +
-                        "mode: " +
-                        mode1 +
-                        ";" +
-                        "</p><p>" +
-                        "wavelength: " +
-                        sampSamp("samp sampBlue", Integer.toString(sfp_RRU_Wave_Length)) +
-                        " nm" +
-                        ";";
-        return BBU + "</p><p>" + RRU;
+        String BBU_slot, BBU_port, MN0, WL0, RRU_sub, MN1, WL1;
+
+        BBU_slot = sampSamp("samp sampBlack", Integer.toString(slot_bbu));
+        BBU_port = sampSamp("samp sampBlack", Integer.toString(slot_bbu));
+        MN0 = sampDataTooltip("Manufacturer name", sampSamp("samp sampPurple", sfp_BBU));
+        WL0 = sampSamp("samp sampBlue", Integer.toString(sfp_BBU_Wave_Length));
+
+        RRU_sub = sampSamp("samp sampBlack", Integer.toString(subRack_rru));
+        MN1 = sampDataTooltip("Manufacturer name", sampSamp("samp sampPurple", sfp_RRU));
+        WL1 = sampSamp("samp sampBlue", Integer.toString(sfp_RRU_Wave_Length));
+
+        return new HtmlBuilder().sfp_info_content(BBU_slot, BBU_port, MN0,
+                TCR,
+                s0, mode0, WL0, RRU_sub, MN1, s1, mode1, WL1);
     }
 
     private @NotNull String trx_selector(boolean b0, double difference) {
@@ -274,23 +243,14 @@ public class Result {
 
         warningSignal = ws0 || ws1 || ws2;
 
-        return "BBU(" +
-                sampSamp("samp sampBlack", Integer.toString(slot_bbu)) +
-                ", " +
-                sampSamp("samp sampBlack", Integer.toString(port_bbu)) +
-                ") " +
-                "<--> " +
-                "RRU " +
-                sampSamp("samp sampBlack", Integer.toString(subRack_rru)) +
-                " (" +
-                sector_selector(subRack_rru) +
-                ") " +
-                "trx: " +
-                diff +
-                "tcr: " +
-                speed +
-                "mode: " +
-                mode;
+        String BBU_slot, BBU_port, RRU_sub, sector;
+
+        BBU_slot = sampSamp("samp sampBlack", Integer.toString(slot_bbu));
+        BBU_port = sampSamp("samp sampBlack", Integer.toString(port_bbu));
+        RRU_sub = sampSamp("samp sampBlack", Integer.toString(subRack_rru));
+        sector = sector_selector(subRack_rru);
+
+        return new HtmlBuilder().summary_content(BBU_slot, BBU_port, RRU_sub, sector, diff, speed, mode);
     }
 
     private @NotNull String sector_selector(int i) {
@@ -316,13 +276,13 @@ public class Result {
 
     private @NotNull String samp_selector(boolean b0, boolean b1, boolean b2) {
 
-        double difference = b0 ? difference1 : difference2;
+        double difference = b0 ? difference1: difference2;
 
         if (b1) {
             if (b2) {
                 return sampDataTooltip("Уровень затухания близок к превышению!", sampSamp("samp sampYellow", String.format("%.2f", difference))) + " dbm";
             } else {
-                return sampDataTooltip("Превышение уровня затухания!" + String.format("%.2f > 4 dbm", difference), sampSamp("samp sampRed", String.format("%.2f", difference))) + " dbm";
+                return sampDataTooltip("Превышение уровня затухания! " + String.format("%.2f > 4 dbm", difference), sampSamp("samp sampRed", String.format("%.2f", difference))) + " dbm";
             }
         } else {
             return sampSamp("samp sampGreen", String.format("%.2f", difference)) + " dbm";

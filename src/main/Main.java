@@ -25,7 +25,6 @@ public class Main extends Application {
         try {
             root = loader.load();
         } catch (NullPointerException | IOException e) {
-//            System.out.println("start" + e.getMessage());
             e.printStackTrace();
         }
 
@@ -33,6 +32,7 @@ public class Main extends Application {
         controller.buttonCSV.setOnAction(event -> controller.getFileChooser(stage));
         controller.webEngine = controller.webView.getEngine();
         controller.webView.setOnDragDropped(controller::onDragDropped);
+        controller.goHtmlHow();
 
         Scene scene = new Scene(root, 600, 640);
         stage.setScene(scene);
