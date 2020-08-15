@@ -17,7 +17,7 @@ public class HtmlBuilder {
     @Contract(pure = true)
     private @NotNull String howItWork() {
 
-        return "<details>" +
+        return "<div class=\"div1\"><details>" +
                 "<summary style=\"text-align: center\"><samp class=\"samp sampBlack\">Как это работает?</samp></summary>" +
                 "<div><p class=\"p1\">1. В u2020 во вкладке Maintenance выбрать \"MML Command\"." +
                 "<p class=\"p1\">2. Слева в дереве NE выбрать БС(можно несколько)." +
@@ -25,7 +25,7 @@ public class HtmlBuilder {
                 "<p class=\"p1\">4. Экспортировать результат в формате .csv" +
                 "<p class=\"p1\">5. Открыть полученый файл .csv в приложении" +
                 "<p class=\"p1\">(можно перетащить в окно программы).</div>" +
-                "</details>";
+                "</details></div>";
     }
 
     @Contract(pure = true)
@@ -35,12 +35,14 @@ public class HtmlBuilder {
                 "        font-size: 12pt;\n" +
                 "        font-weight: bold;\n" +
                 "        text-align: center;\n" +
+                "        padding: 2px;\n" +
                 "    }\n" +
                 "\n" +
                 "    p {\n" +
                 "        font-family: Verdana, Arial, Helvetica, sans-serif;\n" +
-                "        font-size: 11pt;\n" +
+                "        font-size: 10pt;\n" +
                 "        text-align: left;\n" +
+                "        padding: 2px;\n" +
                 "    }\n" +
                 "\n" +
                 "    .p0 {\n" +
@@ -56,9 +58,9 @@ public class HtmlBuilder {
                 "    samp {\n" +
                 "        font-family: Verdana, Arial, Helvetica, sans-serif;\n" +
                 "        font-weight: bold;\n" +
-                "        font-size: 11pt;\n" +
+                "        font-size: 10pt;\n" +
                 "    }\n" +
-                "    \n" +
+                "\n" +
                 "    .sampGreen {\n" +
                 "        color: green;\n" +
                 "    }\n" +
@@ -72,7 +74,7 @@ public class HtmlBuilder {
                 "    }\n" +
                 "\n" +
                 "    .sampYellow {\n" +
-                "        color: orangered;\n" +
+                "        color: orange;\n" +
                 "    }\n" +
                 "\n" +
                 "    .sampPurple {\n" +
@@ -85,19 +87,29 @@ public class HtmlBuilder {
                 "    }\n" +
                 "\n" +
                 "    div {\n" +
-                "        padding: .2rem;\n" +
                 "        display: compact;\n" +
                 "        flex-direction: column;\n" +
+                "        padding: 8px;\n" +
                 "    }\n" +
                 "\n" +
                 "    .div0 {\n" +
                 "        border: 2px solid black;\n" +
-                "        background-color: lavender;\n" +
+                "        background-color: lightgoldenrodyellow;\n" +
+                "        margin-top: 20px;\n" +
+                "        margin-bottom: 20px;\n" +
+                "        border-radius: 20px 20px 20px 20px;\n" +
                 "    }\n" +
                 "\n" +
                 "    .div1 {\n" +
                 "        border: 2px solid black;\n" +
-                "        background-color: #96aabe;\n" +
+                "        border-radius: 10px 10px 10px 10px;\n" +
+                "        margin-top: 30px;\n" +
+                "        background-color: lightgray;\n" +
+                "    }\n" +
+                "\n" +
+                "    .div2 {\n" +
+                "        padding: 2px;\n" +
+                "        margin: 2px;\n" +
                 "    }\n" +
                 "\n" +
                 "    .warningGreen {\n" +
@@ -112,7 +124,7 @@ public class HtmlBuilder {
                 "\n" +
                 "    .warningYellow {\n" +
                 "        font-size: 14pt;\n" +
-                "        color: orangered;\n" +
+                "        color: orange;\n" +
                 "    }\n" +
                 "\n" +
                 "    [data-tooltip] {\n" +
@@ -129,7 +141,7 @@ public class HtmlBuilder {
                 "        font-weight: bold;\n" +
                 "        left: 0;\n" +
                 "        top: 0;\n" +
-                "        background: ghostwhite;\n" +
+                "        background: white;\n" +
                 "        color: black;\n" +
                 "        padding: 0.2em;\n" +
                 "        pointer-events: none;\n" +
@@ -181,11 +193,15 @@ public class HtmlBuilder {
     }
 
     public String vols_attenuation_content(String BBU_slot, String BBU_port, String TRX1, String TRXd, String TRX2, String RRU_sub) {
-        return "BBU(" + BBU_slot + ", " + BBU_port + ") " +
+        return "<p>" +
+                "BBU(" + BBU_slot + ", " + BBU_port + ") " +
                 TRX1 +
+                "(" +
                 TRXd +
+                ")" +
                 TRX2 +
-                "RRU (" + RRU_sub + ");";
+                "RRU (" + RRU_sub + ");" +
+                "</p>";
     }
 
     public String sfp_info_content(String BBU_slot, String BBU_port, String MN0, String TCR, String s0, String mode0, String WL0,
@@ -193,18 +209,21 @@ public class HtmlBuilder {
         String BBUsub = "BBU(" + BBU_slot + ", " + BBU_port + ") ";
         String RRUsub = "RRU (" + RRU_sub + ") ";
 
-        String BBU = AAA(BBUsub,MN0,TCR,s0,mode0,WL0);
-        String RRU = AAA(RRUsub,MN1,TCR,s1,mode1,WL1);
+        String BBU = AAA(BBUsub, MN0, TCR, s0, mode0, WL0);
+        String RRU = AAA(RRUsub, MN1, TCR, s1, mode1, WL1);
 
-        return BBU + "</p><p>" + RRU;
+        return BBU + RRU;
     }
+
     public String AAA(String SUB, String MN, String TCR, String s, String mode, String WL) {
-        return SUB +
+        return "<p>" +
+                SUB +
                 MN + "; " +
                 TCR + s + " Gbit/s; " +
                 "mode: " + mode + ";" +
                 "</p><p>" +
-                "wavelength: " + WL + " nm;";
+                "wavelength: " + WL + " nm;" +
+                "</p>";
     }
 
     @Contract(pure = true)
@@ -214,11 +233,15 @@ public class HtmlBuilder {
                 "</html>";
     }
 
+    private String js(){
+        return "<script type=\"text/javascript\">alert('Yo!');</script>\n";
+    }
+
     public String htmlBuilderHow() {
         return head() + "<body>" + howItWork() + "</body>" + footer();
     }
 
     public String htmlBuilder() {
-        return head() + "<body>" + howItWork() + stringBuilder.toString() + "</body>" + footer();
+        return head() + "<body>" + howItWork() + stringBuilder.toString() + js() +"</body>" + footer();
     }
 }

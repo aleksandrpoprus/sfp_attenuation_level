@@ -30,8 +30,9 @@ public class Main extends Application {
 
         Controller controller = loader.getController();
         controller.buttonCSV.setOnAction(event -> controller.getFileChooser(stage));
-        controller.webEngine = controller.webView.getEngine();
         controller.webView.setOnDragDropped(controller::onDragDropped);
+        controller.webEngine = controller.webView.getEngine();
+        controller.webEngine.setJavaScriptEnabled(true);
         controller.goHtmlHow();
 
         Scene scene = new Scene(root, 600, 640);

@@ -128,10 +128,10 @@ class ParseCSV {
                     String s2 = "[" + result.getBts_name() + "]";
                     if (s.equals(s2)) {
                         BtsName.add(s);
-                        RESULT.add("<div class=\"div0\">" + result.getResult(BtsName.size()) + "</div><p></p>");
+                        RESULT.add("<div class=\"div0\">" + result.getResult(BtsName.size()) + "</div>");
                     }
                 }
-                String tail = "</div><p></p>";
+                String tail = "</div>";
                 RESULT.add(tail);
             }
         }

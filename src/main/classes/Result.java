@@ -104,24 +104,27 @@ public class Result {
         s2 = trx_selector(false, difference2);
 
         if (sfp_BBU_Speed != sfp_RRU_Speed && (sfp_BBU_Mode.equals(SM) && sfp_RRU_Mode.equals(SM))) {
-            s3 = "<p>" + sfp_info(true, false, false) + "</p>";
+            s3 = sfp_info(true, false, false);
         } else if (sfp_BBU_Speed != sfp_RRU_Speed && (sfp_BBU_Mode.equals(SM) && sfp_RRU_Mode.equals(MM) ||
                 sfp_BBU_Mode.equals(MM) && sfp_RRU_Mode.equals(SM))) {
-            s3 = "<p>" + sfp_info(false, true, false) + "</p>";
+            s3 = sfp_info(false, true, false);
         } else if (sfp_BBU_Speed != sfp_RRU_Speed && (sfp_BBU_Mode.equals(SM) && sfp_RRU_Mode.equals(NULL) ||
                 sfp_BBU_Mode.equals(MM) && sfp_RRU_Mode.equals(NULL))) {
-            s3 = "<p>" + sfp_info(false, false, true) + "</p>";
+            s3 = sfp_info(false, false, true);
         } else {
-            s3 = "<p>" + sfp_info(false, false, false) + "</p>";
+            s3 = sfp_info(false, false, false);
         }
 
-        String result = String.format("%s</summary><div>" +
+        String result = String.format("%s</summary>" +
                         "<div>" +
+                        "<div class=\"div2\">" +
                         "<p class=\"p0\">Затухание ВОЛС:</p>" +
-                        "%s%n%s</div>" +
-                        "<div>" +
+                        "%s%n%s" +
+                        "</div>" +
+                        "<div class=\"div2\">" +
                         "<p class=\"p0\">Информация о SFP:</p>" +
-                        "%s</div>" +
+                        "%s" +
+                        "</div>" +
                         "</div>",
                 details_summary(), s1, s2, s3);
 
@@ -158,23 +161,23 @@ public class Result {
         String s0, s1, mode0, mode1;
 
         if (b0) {
-            s0 = sampDataTooltip("В RRU sfp c инным TCR", sampSamp("samp sampRed", String.format("%.1f",sfp_BBU_Speed)));
-            s1 = sampDataTooltip("В BBU sfp c инным TCR", sampSamp("samp sampRed", String.format("%.1f",sfp_RRU_Speed)));
+            s0 = sampDataTooltip("В RRU sfp c инным TCR", sampSamp("samp sampRed", String.format("%.1f", sfp_BBU_Speed)));
+            s1 = sampDataTooltip("В BBU sfp c инным TCR", sampSamp("samp sampRed", String.format("%.1f", sfp_RRU_Speed)));
             mode0 = sampSamp("samp sampBlue", sfp_BBU_Mode);
             mode1 = sampSamp("samp sampBlue", sfp_RRU_Mode);
         } else if (b1) {
-            s0 = sampDataTooltip("Разные TCR и MODE", sampSamp("samp sampRed", String.format("%.1f",sfp_BBU_Speed)));
-            s1 = sampDataTooltip("Разные TCR и MODE", sampSamp("samp sampRed", String.format("%.1f",sfp_RRU_Speed)));
+            s0 = sampDataTooltip("Разные TCR и MODE", sampSamp("samp sampRed", String.format("%.1f", sfp_BBU_Speed)));
+            s1 = sampDataTooltip("Разные TCR и MODE", sampSamp("samp sampRed", String.format("%.1f", sfp_RRU_Speed)));
             mode0 = sampSamp("samp sampYellow", sfp_BBU_Mode);
             mode1 = sampSamp("samp sampYellow", sfp_RRU_Mode);
         } else if (b2) {
-            s0 = sampDataTooltip("Разные TCR и MODE", sampSamp("samp sampRed", String.format("%.1f",sfp_BBU_Speed)));
+            s0 = sampDataTooltip("Разные TCR и MODE", sampSamp("samp sampRed", String.format("%.1f", sfp_BBU_Speed)));
             s1 = sampDataTooltip("RRU недоступен!", sampSamp("samp sampRed", NULL));
             mode0 = sampSamp("samp sampRed", sfp_BBU_Mode);
             mode1 = sampSamp("samp sampRed", sfp_RRU_Mode);
         } else {
-            s0 = sampSamp("samp sampBlue", String.format("%.1f",sfp_BBU_Speed));
-            s1 = sampSamp("samp sampBlue", String.format("%.1f",sfp_RRU_Speed));
+            s0 = sampSamp("samp sampBlue", String.format("%.1f", sfp_BBU_Speed));
+            s1 = sampSamp("samp sampBlue", String.format("%.1f", sfp_RRU_Speed));
             mode0 = sampSamp("samp sampBlue", sfp_BBU_Mode);
             mode1 = sampSamp("samp sampBlue", sfp_RRU_Mode);
         }
@@ -199,12 +202,12 @@ public class Result {
 
         if (difference >= 3.9 && difference <= 3.99 || difference >= 4)
             if (difference >= 4) {
-                return "<p>" + sfp_attenuation(b0, true, false) + "</p>";
+                return sfp_attenuation(b0, true, false);
             } else {
-                return "<p>" + sfp_attenuation(b0, true, true) + "</p>";
+                return sfp_attenuation(b0, true, true);
             }
         else {
-            return "<p>" + sfp_attenuation(b0, false, false) + "</p>";
+            return sfp_attenuation(b0, false, false);
         }
     }
 
@@ -255,20 +258,27 @@ public class Result {
 
     private @NotNull String sector_selector(int i) {
 
+        String sc;
+        int ic = i - ((i / 10) * 10);
+
+        ic++;
+
+        sc = ic > 3 ? String.format("%s (indoor?)", ic) : String.format("%s", ic);
+
         if (i >= 90 && i <= 95) {
-            return sampDataTooltip("GSM-900 МГц", "G");
+            return sampDataTooltip("C" + sc + " GSM-900 МГц", "G");
         } else if (i >= 100 && i <= 105) {
-            return sampDataTooltip("GSM-900 МГц", "G, ") + sampDataTooltip("LTE-800 МГц", "L");
+            return sampDataTooltip("C" + sc + " GSM-900 МГц", "G, ") + sampDataTooltip("C" + sc + " LTE-800 МГц", "L");
         } else if (i >= 180 && i <= 185) {
-            return sampDataTooltip("DSC-1800 МГц", "D");
+            return sampDataTooltip("C" + sc + " DSC-1800 МГц", "D");
         } else if (i >= 200 && i <= 205) {
-            return sampDataTooltip("DSC-1800 МГц", "D, ") + sampDataTooltip("UMTS-2100 МГц", "U, ") + sampDataTooltip("LTE-1800 МГц", "L");
+            return sampDataTooltip("C" + sc + " DSC-1800 МГц", "D, ") + sampDataTooltip("C" + sc + " UMTS-2100 МГц", "U, ") + sampDataTooltip("C" + sc + " LTE-1800 МГц", "L");
         } else if (i >= 210 && i <= 215) {
-            return sampDataTooltip("UMTS-2100 МГц", "U");
+            return sampDataTooltip("C" + sc + " UMTS-2100 МГц", "U");
         } else if (i >= 230 && i <= 235) {
-            return sampDataTooltip("LTE-2600 МГц TDD", "L");
+            return sampDataTooltip("C" + sc + " LTE-2600 МГц TDD", "L");
         } else if (i >= 240 && i <= 245) {
-            return sampDataTooltip("LTE-2600 МГц FDD", "L");
+            return sampDataTooltip("C" + sc + " LTE-2600 МГц FDD", "L");
         } else {
             return "";
         }
@@ -276,7 +286,7 @@ public class Result {
 
     private @NotNull String samp_selector(boolean b0, boolean b1, boolean b2) {
 
-        double difference = b0 ? difference1: difference2;
+        double difference = b0 ? difference1 : difference2;
 
         if (b1) {
             if (b2) {
