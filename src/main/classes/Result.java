@@ -1,7 +1,5 @@
 package main.classes;
 
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 
 public class Result {
 
@@ -136,7 +134,7 @@ public class Result {
     }
 
 
-    private @NotNull String sfp_attenuation(boolean b0, boolean b1, boolean b2) {
+    private String sfp_attenuation(boolean b0, boolean b1, boolean b2) {
 
         String BBU_slot, BBU_port, TRX1, TRXd, TRX2, RRU_sub;
 
@@ -156,7 +154,7 @@ public class Result {
         return new HtmlBuilder().vols_attenuation_content(BBU_slot, BBU_port, TRX1, TRXd, TRX2, RRU_sub);
     }
 
-    private @NotNull String sfp_info(boolean b0, boolean b1, boolean b2) {
+    private String sfp_info(boolean b0, boolean b1, boolean b2) {
 
         String s0, s1, mode0, mode1;
 
@@ -185,7 +183,7 @@ public class Result {
         String BBU_slot, BBU_port, MN0, WL0, RRU_sub, MN1, WL1;
 
         BBU_slot = sampSamp("samp sampBlack", Integer.toString(slot_bbu));
-        BBU_port = sampSamp("samp sampBlack", Integer.toString(slot_bbu));
+        BBU_port = sampSamp("samp sampBlack", Integer.toString(port_bbu));
         MN0 = sampDataTooltip("Manufacturer name", sampSamp("samp sampPurple", sfp_BBU));
         WL0 = sampSamp("samp sampBlue", Integer.toString(sfp_BBU_Wave_Length));
 
@@ -198,7 +196,7 @@ public class Result {
                 s0, mode0, WL0, RRU_sub, MN1, s1, mode1, WL1);
     }
 
-    private @NotNull String trx_selector(boolean b0, double difference) {
+    private String trx_selector(boolean b0, double difference) {
 
         if (difference >= 3.9 && difference <= 3.99 || difference >= 4)
             if (difference >= 4) {
@@ -256,7 +254,7 @@ public class Result {
         return new HtmlBuilder().summary_content(BBU_slot, BBU_port, RRU_sub, sector, diff, speed, mode);
     }
 
-    private @NotNull String sector_selector(int i) {
+    private String sector_selector(int i) {
 
         String sc;
         int ic = i - ((i / 10) * 10);
@@ -284,7 +282,7 @@ public class Result {
         }
     }
 
-    private @NotNull String samp_selector(boolean b0, boolean b1, boolean b2) {
+    private String samp_selector(boolean b0, boolean b1, boolean b2) {
 
         double difference = b0 ? difference1 : difference2;
 
@@ -300,13 +298,12 @@ public class Result {
     }
 
 
-    @Contract(pure = true)
-    private @NotNull String sampSamp(String css_class, String s) {
+    private String sampSamp(String css_class, String s) {
         return "<samp class=\"" + css_class + "\">" + s + "</samp>";
     }
 
-    @Contract(pure = true)
-    private @NotNull String sampDataTooltip(String s0, String s1) {
+
+    private String sampDataTooltip(String s0, String s1) {
         return "<samp data-tooltip=\"" + s0 + "\">" + s1 + "</samp>";
     }
 }

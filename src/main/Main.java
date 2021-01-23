@@ -33,6 +33,7 @@ public class Main extends Application {
         controller.webView.setOnDragDropped(controller::onDragDropped);
         controller.webEngine = controller.webView.getEngine();
         controller.webEngine.setJavaScriptEnabled(true);
+        controller.webEngine.setUserAgent("AppleWebKit/537.44");
         controller.goHtmlHow();
 
         Scene scene = new Scene(root, 600, 640);

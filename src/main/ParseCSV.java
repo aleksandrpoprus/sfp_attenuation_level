@@ -2,7 +2,6 @@ package main;
 
 import au.com.bytecode.opencsv.CSVReader;
 import main.classes.*;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -17,7 +16,7 @@ class ParseCSV {
 
     private static final String REGEX_HEAD = "(?:BTS)\\w+";
     private static final String REGEX_DSP_SFP_BBU_SIDE = "(?:[0],[ ]+(?:[0]),[ ]+[0-5],[ ]+[C-R]+,[ ]+[0-5],[ ]+(?:[\\w]+,[ ]+|[A-z]+ [A-z,.]+,[ ]+){22}(-?\\d+,[ ]+){6})";
-    private static final String REGEX_DSP_SFP_RRU_SIDE = "(?:[0],[ ]+(?:[\\d][0-9]|[\\d][0-8][0-5]),[ ]+[0-5],[ ]+[C-R]+,[ ]+[0-5],[ ]+(?:[\\w]+,[ ]+|[A-z]+ [A-z,.]+,[ ]+){22}(-?\\d+,[ ]+){6})";
+    private static final String REGEX_DSP_SFP_RRU_SIDE = "(?:[0],[ ]+(?:[\\d][0-9]|[\\d][0-8][0-5]),[ ]+[0-5],[ ]+[C-R]+,[ ]+[0-5],[ ]+(?:[\\w]+,[ ]+|[A-z]+ [A-z,.]+,[ ]+){13}(-?\\d+,[ ]+){15})";
     private static final String REGEX_LST_RRUCHAIN = "(?:[\\d]|[\\d][0-9]|[\\d][0-8][0-5]),[ ]+(?:[\\w]+,[ ]+){2}(?:[\\d],[ ]+){5}(?:(?:[\\w]+|[\\w]+ [\\w]+),[ ]+){13}[0-9,A-Z\\-]+,[ ]+[\\w]+,[ ]+[0-9,.:A-Z&]+,[ ]+(?:[\\w]+,[ ]+){2}";
 
     private static final String SM = "<samp data-tooltip=\"SINGLEMODE\">SM</samp>";
@@ -54,8 +53,8 @@ class ParseCSV {
     private static int slotRRU_lst;
     private static int portRRU_lst;
 
-    private static String REGEX(String regex){
-        return String.format("^[\\[]%s[]]",regex);
+    private static String REGEX(String regex) {
+        return String.format("^[\\[]%s[]]", regex);
     }
 
 
@@ -77,7 +76,7 @@ class ParseCSV {
         }
     }
 
-    private static void ScanDoc(@NotNull CSVReader reader) {
+    private static void ScanDoc(CSVReader reader) {
         try {
             List<String[]> allRows = reader.readAll();
             for (String[] row : allRows) {
@@ -203,7 +202,7 @@ class ParseCSV {
                     if (rru.getSubRack() == rrus.get(i)) {
                         rrus.remove(i);
                     }
-                } catch (IndexOutOfBoundsException e){
+                } catch (IndexOutOfBoundsException e) {
                     System.out.print("");
                 }
             }
@@ -242,48 +241,48 @@ class ParseCSV {
         }
     }
 
-    private static int subRack(String @NotNull [] row, boolean b){
+    private static int subRack(String[] row, boolean b) {
         return b ? Integer.parseInt(row[1].trim()) : Integer.parseInt(row[0].trim());
     }
 
-    private static int slot(String @NotNull [] row, boolean b){
+    private static int slot(String[] row, boolean b) {
         return b ? Integer.parseInt(row[2].trim()) : Integer.parseInt(row[5].trim());
 
     }
 
-    private static int port(String @NotNull [] row, boolean b){
+    private static int port(String[] row, boolean b) {
         return b ? Integer.parseInt(row[4].trim()) : Integer.parseInt(row[6].trim());
 
     }
 
-    private static @NotNull String sfp_manufacturer_name(String @NotNull [] row){
+    private static String sfp_manufacturer_name(String[] row) {
         return row[7].trim();
     }
 
-    private static @NotNull String sfp_mode(String @NotNull [] row){
+    private static String sfp_mode(String[] row) {
         return row[9].trim().equals("SINGLEMODE") ? SM : MM;
     }
 
-    private static int sfp_wave_length(String @NotNull [] row){
+    private static int sfp_wave_length(String[] row) {
         return Integer.parseInt(row[10].trim());
     }
 
-    private static int sfp_speed(String @NotNull [] row){
+    private static int sfp_speed(String[] row) {
         return Integer.parseInt(row[12].trim());
     }
 
-    private static int tx(String @NotNull [] row){
+    private static int tx(String[] row) {
         return Integer.parseInt(row[27].trim());
     }
 
-    private static int rx(String @NotNull [] row){
+    private static int rx(String[] row) {
         return Integer.parseInt(row[28].trim());
     }
 
     private static void itIsSideBBU(String[] row) {
         String s = Arrays.toString(row);
         if (Pattern.matches(REGEX(REGEX_DSP_SFP_BBU_SIDE), s)) {
-            BBU_Port bbuPorts = new BBU_Port(BTS_name, subRack(row,true), slot(row,true), port(row,true),
+            BBU_Port bbuPorts = new BBU_Port(BTS_name, subRack(row, true), slot(row, true), port(row, true),
                     tx(row), rx(row),
                     sfp_manufacturer_name(row), sfp_speed(row), sfp_mode(row), sfp_wave_length(row));
             dsp_sfp.setBBU_port(bbuPorts);
@@ -293,7 +292,7 @@ class ParseCSV {
     private static void itIsSideRRU(String[] row) {
         String s = Arrays.toString(row);
         if (Pattern.matches(REGEX(REGEX_DSP_SFP_RRU_SIDE), s)) {
-            RRU rru = new RRU(BTS_name, subRack(row,true), slot(row,true), port(row,true), tx(row), rx(row),
+            RRU rru = new RRU(BTS_name, subRack(row, true), slot(row, true), port(row, true), tx(row), rx(row),
                     sfp_manufacturer_name(row), sfp_speed(row), sfp_mode(row), sfp_wave_length(row));
             dsp_sfp.setRRU(rru);
         }
@@ -302,7 +301,7 @@ class ParseCSV {
     private static void ifChainNo(String[] row) {
         String s = Arrays.toString(row);
         if (Pattern.matches(REGEX(REGEX_LST_RRUCHAIN), s)) {
-            RRU rru = new RRU(BTS_name, subRack(row,false), slot(row,false), port(row,false),
+            RRU rru = new RRU(BTS_name, subRack(row, false), slot(row, false), port(row, false),
                     0, 0,
                     null, 0, null, 0);
             lst_rruchain.getArrRRU(rru);

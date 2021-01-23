@@ -1,7 +1,5 @@
 package main.classes;
 
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 
 public class HtmlBuilder {
 
@@ -14,8 +12,7 @@ public class HtmlBuilder {
         this.stringBuilder = stringBuilder;
     }
 
-    @Contract(pure = true)
-    private @NotNull String howItWork() {
+    private String howItWork() {
 
         return "<div class=\"div1\"><details>" +
                 "<summary style=\"text-align: center\"><samp class=\"samp sampBlack\">Как это работает?</samp></summary>" +
@@ -28,8 +25,8 @@ public class HtmlBuilder {
                 "</details></div>";
     }
 
-    @Contract(pure = true)
-    private @NotNull String cssStyle() {
+
+    private String cssStyle() {
         return "h1 {\n" +
                 "        font-family: Verdana, Arial, Helvetica, sans-serif;\n" +
                 "        font-size: 12pt;\n" +
@@ -169,8 +166,8 @@ public class HtmlBuilder {
                 "    }";
     }
 
-    @Contract(pure = true)
-    private @NotNull String head() {
+
+    private String head() {
 
         return "<!DOCTYPE html>" +
                 "<html lang=\"ru\">" +
@@ -226,14 +223,14 @@ public class HtmlBuilder {
                 "</p>";
     }
 
-    @Contract(pure = true)
-    private @NotNull String footer() {
+
+    private String footer() {
         return "<footer>" +
                 "</footer>" +
                 "</html>";
     }
 
-    private String js(){
+    private String js() {
         return "<script type=\"text/javascript\">alert('Yo!');</script>\n";
     }
 
@@ -242,6 +239,6 @@ public class HtmlBuilder {
     }
 
     public String htmlBuilder() {
-        return head() + "<body>" + howItWork() + stringBuilder.toString() + js() +"</body>" + footer();
+        return head() + "<body>" + howItWork() + stringBuilder.toString() + js() + "</body>" + footer();
     }
 }
