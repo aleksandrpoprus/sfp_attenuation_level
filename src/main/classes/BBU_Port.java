@@ -2,86 +2,85 @@ package main.classes;
 
 public class BBU_Port extends BTS {
 
-    private final int SubRack;
-    private final int Slot;
-    private final int Port;
-    private final int Tx;
-    private final int Rx;
-    private final String SfpManufacturerName;
-    private final int Sfp_Speed;
-    private final String Sfp_Mode;
-    private final int Sfp_Wave_Length;
-
-    public BBU_Port(String BTS_name,
-                    int SubRack,
-                    int Slot,
-                    int Port,
-                    int Tx,
-                    int Rx,
-                    String SfpManufacturerName,
-                    int Sfp_Speed,
-                    String Sfp_Mode,
-                    int Sfp_Wave_length) {
-        super(BTS_name);
-        this.SubRack = SubRack;
-        this.Slot = Slot;
-        this.Port = Port;
-        this.Tx = Tx;
-        this.Rx = Rx;
-        this.SfpManufacturerName = SfpManufacturerName;
-        this.Sfp_Speed = Sfp_Speed;
-        this.Sfp_Mode = Sfp_Mode;
-        this.Sfp_Wave_Length = Sfp_Wave_length;
+    public BBU_Port(String btsName, int subRack, int slot, int chain, int port0, int port1, int tx, int rx, String sfpManufacturerName, int sfpSpeed, String sfpMode, int sfpWaveLength) {
+        super(btsName, subRack, slot, chain, port0, port1, tx, rx, sfpManufacturerName, sfpSpeed, sfpMode, sfpWaveLength);
     }
 
+    @Override
+    public String getBtsName() {
+        return btsName;
+    }
+
+    @Override
     public int getSubRack() {
-        return SubRack;
+        return subRack;
     }
 
+    @Override
     public int getSlot() {
-        return Slot;
+        return slot;
     }
 
-    public int getPort() {
-        return Port;
+    @Override
+    public int getChain() {
+        return chain;
     }
 
+    @Override
+    public int getPort0() {
+        return port0;
+    }
+
+    @Override
+    public int getPort1() {
+        return port1;
+    }
+
+    @Override
     public int getTx() {
-        return Tx;
+        return tx;
     }
 
+    @Override
     public int getRx() {
-        return Rx;
+        return rx;
     }
 
+    @Override
     public String getSfpManufacturerName() {
-        return SfpManufacturerName;
+        return sfpManufacturerName;
     }
 
-    public int getSfp_Speed() {
-        return Sfp_Speed;
+    @Override
+    public int getSfpSpeed() {
+        return sfpSpeed;
     }
 
-    public String getSfp_Mode() {
-        return Sfp_Mode;
+    @Override
+    public String getSfpMode() {
+        return sfpMode;
     }
 
-    public int getSfp_Wave_Length() {
-        return Sfp_Wave_Length;
+    @Override
+    public int getSfpWaveLength() {
+        return sfpWaveLength;
     }
 
     @Override
     public String display() {
         return "BBU_Port{" +
-                "SubRack_BBU=" + SubRack +
-                ", Slot_BBU=" + Slot +
-                ", Port_BBU=" + Port +
-                ", Tx_BBU=" + Tx +
-                ", Rx_BBU=" + Rx +
-                ", Sfp_BBU='" + SfpManufacturerName + '\'' +
-                ", Sfp_BBU_Speed=" + Sfp_Speed +
-                ", Sfp_Mode='" + Sfp_Mode + '\'' +
-                ", Sfp_Wave_Length=" + Sfp_Wave_Length +
+                "btsName='" + btsName + '\'' +
+                ", subRack=" + subRack +
+                ", slot=" + slot +
+                ", port0=" + port0 +
+                ", port1=" + port1 +
+                ", chain=" + chain +
+                ", tx=" + tx +
+                ", rx=" + rx +
+                ", sfpManufacturerName='" + sfpManufacturerName + '\'' +
+                ", sfpSpeed=" + sfpSpeed +
+                ", sfpMode='" + sfpMode + '\'' +
+                ", sfpWaveLength=" + sfpWaveLength +
                 '}';
     }
 }
