@@ -263,19 +263,23 @@ public class Result {
 
         sc = ic > 3 ? String.format("%s (indoor?)", ic) : String.format("%s", ic);
 
-        if (i >= 90 && i <= 95) {
+        if (i >= 60 && i <= 69) {
+            return sampDataTooltip("C" + sc + " NR-4900 МГц", "NR, ");
+        } else if (i >= 70 && i <= 79) {
+            return sampDataTooltip("C" + sc + " NR-27900 МГц", "NR, ");
+        } else if (i >= 90 && i <= 99) {
             return sampDataTooltip("C" + sc + " GSM-900 МГц", "G");
-        } else if (i >= 100 && i <= 105) {
+        } else if (i >= 100 && i <= 109) {
             return sampDataTooltip("C" + sc + " GSM-900 МГц", "G, ") + sampDataTooltip("C" + sc + " LTE-800 МГц", "L");
-        } else if (i >= 180 && i <= 185) {
+        } else if (i >= 180 && i <= 189) {
             return sampDataTooltip("C" + sc + " DSC-1800 МГц", "D");
-        } else if (i >= 200 && i <= 205) {
+        } else if (i >= 200 && i <= 209) {
             return sampDataTooltip("C" + sc + " DSC-1800 МГц", "D, ") + sampDataTooltip("C" + sc + " UMTS-2100 МГц", "U, ") + sampDataTooltip("C" + sc + " LTE-1800 МГц", "L");
-        } else if (i >= 210 && i <= 215) {
+        } else if (i >= 210 && i <= 219) {
             return sampDataTooltip("C" + sc + " UMTS-2100 МГц", "U");
-        } else if (i >= 230 && i <= 235) {
+        } else if (i >= 230 && i <= 239) {
             return sampDataTooltip("C" + sc + " LTE-2600 МГц TDD", "L");
-        } else if (i >= 240 && i <= 245) {
+        } else if (i >= 240 && i <= 249) {
             return sampDataTooltip("C" + sc + " LTE-2600 МГц FDD", "L");
         } else {
             return "";

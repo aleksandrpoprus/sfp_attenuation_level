@@ -2,8 +2,23 @@ package main.classes;
 
 public class BBU_Port extends BTS {
 
-    public BBU_Port(String btsName, int subRack, int slot, int chain, int port0, int port1, int tx, int rx, String sfpManufacturerName, int sfpSpeed, String sfpMode, int sfpWaveLength) {
-        super(btsName, subRack, slot, chain, port0, port1, tx, rx, sfpManufacturerName, sfpSpeed, sfpMode, sfpWaveLength);
+    int port0;
+    int tx0;
+    int rx0;
+    String sfpManufacturerName0;
+    int sfpSpeed0;
+    String sfpMode0;
+    int sfpWaveLength0;
+
+    public BBU_Port(String btsName, int subRack, int slot, int port0, int tx0, int rx0, String sfpManufacturerName0, int sfpSpeed0, String sfpMode0, int sfpWaveLength0) {
+        super(btsName, subRack, slot);
+        this.port0 = port0;
+        this.tx0 = tx0;
+        this.rx0 = rx0;
+        this.sfpManufacturerName0 = sfpManufacturerName0;
+        this.sfpSpeed0 = sfpSpeed0;
+        this.sfpMode0 = sfpMode0;
+        this.sfpWaveLength0 = sfpWaveLength0;
     }
 
     @Override
@@ -21,49 +36,32 @@ public class BBU_Port extends BTS {
         return slot;
     }
 
-    @Override
-    public int getChain() {
-        return chain;
-    }
-
-    @Override
     public int getPort0() {
         return port0;
     }
 
-    @Override
-    public int getPort1() {
-        return port1;
+    public int getTx0() {
+        return tx0;
     }
 
-    @Override
-    public int getTx() {
-        return tx;
+    public int getRx0() {
+        return rx0;
     }
 
-    @Override
-    public int getRx() {
-        return rx;
+    public String getSfpManufacturerName0() {
+        return sfpManufacturerName0;
     }
 
-    @Override
-    public String getSfpManufacturerName() {
-        return sfpManufacturerName;
+    public int getSfpSpeed0() {
+        return sfpSpeed0;
     }
 
-    @Override
-    public int getSfpSpeed() {
-        return sfpSpeed;
+    public String getSfpMode0() {
+        return sfpMode0;
     }
 
-    @Override
-    public String getSfpMode() {
-        return sfpMode;
-    }
-
-    @Override
-    public int getSfpWaveLength() {
-        return sfpWaveLength;
+    public int getSfpWaveLength0() {
+        return sfpWaveLength0;
     }
 
     @Override
@@ -73,14 +71,12 @@ public class BBU_Port extends BTS {
                 ", subRack=" + subRack +
                 ", slot=" + slot +
                 ", port0=" + port0 +
-                ", port1=" + port1 +
-                ", chain=" + chain +
-                ", tx=" + tx +
-                ", rx=" + rx +
-                ", sfpManufacturerName='" + sfpManufacturerName + '\'' +
-                ", sfpSpeed=" + sfpSpeed +
-                ", sfpMode='" + sfpMode + '\'' +
-                ", sfpWaveLength=" + sfpWaveLength +
+                ", tx0=" + tx0 +
+                ", rx0=" + rx0 +
+                ", sfpManufacturerName0='" + sfpManufacturerName0 + '\'' +
+                ", sfpSpeed0=" + sfpSpeed0 +
+                ", sfpMode0='" + sfpMode0 + '\'' +
+                ", sfpWaveLength0=" + sfpWaveLength0 +
                 '}';
     }
 }

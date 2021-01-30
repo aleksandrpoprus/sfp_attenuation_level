@@ -2,8 +2,55 @@ package main.classes;
 
 public class RRU extends BTS {
 
-    public RRU(String btsName, int subRack, int slot, int chain, int port0, int port1, int tx, int rx, String sfpManufacturerName, int sfpSpeed, String sfpMode, int sfpWaveLength) {
-        super(btsName, subRack, slot, chain, port0, port1, tx, rx, sfpManufacturerName, sfpSpeed, sfpMode, sfpWaveLength);
+    int port0;
+    int tx0;
+    int rx0;
+    String sfpManufacturerName0;
+    int sfpSpeed0;
+    String sfpMode0;
+    int sfpWaveLength0;
+
+    int port1;
+    int tx1;
+    int rx1;
+    String sfpManufacturerName1;
+    int sfpSpeed1;
+    String sfpMode1;
+    int sfpWaveLength1;
+
+    public RRU(String btsName, int subRack, int slot,
+
+               int port0,
+               int tx0,
+               int rx0,
+               String sfpManufacturerName0,
+               int sfpSpeed0,
+               String sfpMode0,
+               int sfpWaveLength0,
+
+               int port1,
+               int tx1,
+               int rx1,
+               String sfpManufacturerName1,
+               int sfpSpeed1,
+               String sfpMode1,
+               int sfpWaveLength1)
+    {
+        super(btsName, subRack, slot);
+        this.port0 = port0;
+        this.tx0 = tx0;
+        this.rx0 = rx0;
+        this.sfpManufacturerName0 = sfpManufacturerName0;
+        this.sfpSpeed0 = sfpSpeed0;
+        this.sfpMode0 = sfpMode0;
+        this.sfpWaveLength0 = sfpWaveLength0;
+        this.port1 = port1;
+        this.tx1 = tx1;
+        this.rx1 = rx1;
+        this.sfpManufacturerName1 = sfpManufacturerName1;
+        this.sfpSpeed1 = sfpSpeed1;
+        this.sfpMode1 = sfpMode1;
+        this.sfpWaveLength1 = sfpWaveLength1;
     }
 
     @Override
@@ -21,49 +68,65 @@ public class RRU extends BTS {
         return slot;
     }
 
-    @Override
-    public int getChain() {
-        return chain;
-    }
 
-    @Override
     public int getPort0() {
         return port0;
     }
 
-    @Override
+    public int getTx0() {
+        return tx0;
+    }
+
+    public int getRx0() {
+        return rx0;
+    }
+
+    public String getSfpManufacturerName0() {
+        return sfpManufacturerName0;
+    }
+
+    public int getSfpSpeed0() {
+        return sfpSpeed0;
+    }
+
+    public String getSfpMode0() {
+        return sfpMode0;
+    }
+
+    public int getSfpWaveLength0() {
+        return sfpWaveLength0;
+    }
+
     public int getPort1() {
         return port1;
     }
 
-    @Override
-    public int getTx() {
-        return tx;
+    public int getTx1() {
+        return tx1;
     }
 
-    @Override
-    public int getRx() {
-        return rx;
+    public int getRx1() {
+        return rx1;
     }
 
-    @Override
-    public String getSfpManufacturerName() {
-        return sfpManufacturerName;
+    public String getSfpManufacturerName1() {
+        return sfpManufacturerName1;
     }
 
-    @Override
-    public int getSfpSpeed() {
-        return sfpSpeed;
+    public int getSfpSpeed1() {
+        return sfpSpeed1;
     }
 
-    @Override
-    public String getSfpMode() {
-        return sfpMode;
+    public String getSfpMode1() {
+        return sfpMode1;
     }
 
-    @Override
-    public int getSfpWaveLength() {
-        return sfpWaveLength;
+    public int getSfpWaveLength1() {
+        return sfpWaveLength1;
+    }
+
+    public void setSubRack(int subRack) {
+        super.subRack = subRack;
     }
 
     @Override
@@ -73,14 +136,20 @@ public class RRU extends BTS {
                 ", subRack=" + subRack +
                 ", slot=" + slot +
                 ", port0=" + port0 +
+                ", tx0=" + tx0 +
+                ", rx0=" + rx0 +
+                ", sfpManufacturerName0='" + sfpManufacturerName0 + '\'' +
+                ", sfpSpeed0=" + sfpSpeed0 +
+                ", sfpMode0='" + sfpMode0 + '\'' +
+                ", sfpWaveLength0=" + sfpWaveLength0 +
                 ", port1=" + port1 +
-                ", chain=" + chain +
-                ", tx=" + tx +
-                ", rx=" + rx +
-                ", sfpManufacturerName='" + sfpManufacturerName + '\'' +
-                ", sfpSpeed=" + sfpSpeed +
-                ", sfpMode='" + sfpMode + '\'' +
-                ", sfpWaveLength=" + sfpWaveLength +
+                ", tx1=" + tx1 +
+                ", rx1=" + rx1 +
+                ", sfpManufacturerName1='" + sfpManufacturerName1 + '\'' +
+                ", sfpSpeed1=" + sfpSpeed1 +
+                ", sfpMode1='" + sfpMode1 + '\'' +
+                ", sfpWaveLength1=" + sfpWaveLength1 +
                 '}';
     }
+
 }
