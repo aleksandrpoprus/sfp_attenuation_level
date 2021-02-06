@@ -36,13 +36,13 @@ public class Main extends Application {
         controller.webEngine.setUserAgent("AppleWebKit/537.44");
         controller.goHtmlHow();
 
-        Scene scene = new Scene(root, 600, 640);
+        Scene scene = new Scene(root, 680, 640);
         stage.setScene(scene);
 
         stage.setTitle("Проверка уровней затухания SFP");
         stage.setResizable(true);
-        stage.setMaxWidth(600);
-        stage.setMinWidth(600);
+        stage.setMaxWidth(680);
+        stage.setMinWidth(680);
         stage.setMinHeight(200);
         stage.getIcons().add(new Image(Main.class.getResourceAsStream("res/images/icon.png")));
 

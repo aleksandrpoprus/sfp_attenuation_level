@@ -18,7 +18,8 @@ public class HtmlBuilder {
                 "<summary style=\"text-align: center\"><samp class=\"samp sampBlack\">Как это работает?</samp></summary>" +
                 "<div><p class=\"p1\">1. В u2020 во вкладке Maintenance выбрать \"MML Command\"." +
                 "<p class=\"p1\">2. Слева в дереве NE выбрать БС(можно несколько)." +
-                "<p class=\"p1\">3. Выполнить в консоли DSP SFP и LST RRUCHAIN." +
+                "<p class=\"p1\">3. Выполнить в консоли DSP SFP и LST RRUCHAIN" +
+                "<p class=\"p1\">   (если 5G(R) то потребуется еще LST RRU)." +
                 "<p class=\"p1\">4. Экспортировать результат в формате .csv" +
                 "<p class=\"p1\">5. Открыть полученый файл .csv в приложении" +
                 "<p class=\"p1\">(можно перетащить в окно программы).</div>" +
@@ -180,31 +181,73 @@ public class HtmlBuilder {
                 "</head>";
     }
 
-    public String summary_content(String BBU_slot, String BBU_port, String RRU_sub, String sector, String diff, String speed, String mode) {
-        return "BBU(" + BBU_slot + ", " + BBU_port + ") " +
+    public String summary_content(
+            String BBU_sideSubRack,
+            String BBU_sub,
+            String BBU_slot,
+            String BBU_port,
+            String RRU_sideSubRack,
+            String RRU_sub,
+            String RRU_slot,
+            String RRU_port,
+            String sector,
+            String diff,
+            String speed,
+            String mode
+    ) {
+        return BBU_sideSubRack + " (" + BBU_sub + ", " + BBU_slot + ", " + BBU_port + ") " +
                 "<--> " +
-                "RRU " + RRU_sub + " (" + sector + ") " +
+                RRU_sideSubRack + " (" + RRU_sub + ", " + RRU_slot + ", " + RRU_port + ") " +
                 "trx: " + diff +
                 "tcr: " + speed +
                 "mode: " + mode;
     }
 
-    public String vols_attenuation_content(String BBU_slot, String BBU_port, String TRX1, String TRXd, String TRX2, String RRU_sub) {
+    public String vols_attenuation_content_0(
+            String BBU_sideSubRack,
+            String BBU_sub,
+            String BBU_slot,
+            String BBU_port,
+            String TRX1,
+            String TRXd,
+            String TRX2,
+            String RRU_sideSubRack,
+            String RRU_sub,
+            String RRU_slot,
+            String RRU_port
+    ) {
         return "<p>" +
-                "BBU(" + BBU_slot + ", " + BBU_port + ") " +
+                BBU_sideSubRack + " (" + BBU_sub + ", " + BBU_slot + ", " + BBU_port + ") " +
                 TRX1 +
                 "(" +
                 TRXd +
                 ")" +
                 TRX2 +
-                "RRU (" + RRU_sub + ");" +
+                RRU_sideSubRack + " (" + RRU_sub + ", " + RRU_slot + ", " + RRU_port + ") " +
                 "</p>";
     }
 
-    public String sfp_info_content(String BBU_slot, String BBU_port, String MN0, String TCR, String s0, String mode0, String WL0,
-                                   String RRU_sub, String MN1, String s1, String mode1, String WL1) {
-        String BBUsub = "BBU(" + BBU_slot + ", " + BBU_port + ") ";
-        String RRUsub = "RRU (" + RRU_sub + ") ";
+    public String sfp_info_content(
+            String BBU_sideSubRack,
+            String BBU_sub,
+            String BBU_slot,
+            String BBU_port,
+            String MN0,
+            String TCR,
+            String s0,
+            String mode0,
+            String WL0,
+            String RRU_sideSubRack,
+            String RRU_sub,
+            String RRU_slot,
+            String RRU_port,
+            String MN1,
+            String s1,
+            String mode1,
+            String WL1
+    ) {
+        String BBUsub = BBU_sideSubRack + " (" + BBU_sub + ", " + BBU_slot + ", " + BBU_port + ") ";
+        String RRUsub = RRU_sideSubRack + " (" + RRU_sub + ", " + RRU_slot + ", " + RRU_port + ") ";
 
         String BBU = AAA(BBUsub, MN0, TCR, s0, mode0, WL0);
         String RRU = AAA(RRUsub, MN1, TCR, s1, mode1, WL1);
@@ -212,7 +255,12 @@ public class HtmlBuilder {
         return BBU + RRU;
     }
 
-    public String AAA(String SUB, String MN, String TCR, String s, String mode, String WL) {
+    public String AAA(String SUB,
+                      String MN,
+                      String TCR,
+                      String s,
+                      String mode,
+                      String WL) {
         return "<p>" +
                 SUB +
                 MN + "; " +
@@ -226,6 +274,7 @@ public class HtmlBuilder {
 
     private String footer() {
         return "<footer>" +
+                js() +
                 "</footer>" +
                 "</html>";
     }
@@ -239,6 +288,6 @@ public class HtmlBuilder {
     }
 
     public String htmlBuilder() {
-        return head() + "<body>" + howItWork() + stringBuilder.toString() + js() + "</body>" + footer();
+        return head() + "<body>" + howItWork() + stringBuilder.toString() + "</body>" + footer();
     }
 }

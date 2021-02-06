@@ -15,9 +15,8 @@ import java.util.stream.Collectors;
 class ParseCSV {
 
     private static final String REGEX_HEAD = "(?:BTS)\\w+";
-    private static final String REGEX_DSP_SFP_BBU_SIDE = "(?:[0],[ ]+(?:[0]),[ ]+[0-5],[ ]+[C-R]+,[ ]+[0-5],[ ]+(?:[\\w]+,[ ]+|[A-z]+ [A-z,.]+,[ ]+){22}(-?\\d+,[ ]+){6})";
     private static final String REGEX_LST_RRU = "(?:\\d,[ ]+\\d+,[ ]+\\d+,[ ]+\\w+,[ ]+\\w+,[ ]+\\d+,[ ]+\\d,[ ]+\\w+,[ ]+\\w+,[ ]+\\d+,[ ]+\\d+,[ ]+\\w+,[ ]+\\w+,[ ]+\\d+,[ ]+\\d+,[ ]+\\d+,[ ]+\\d+,[ ]+\\w+,[ ]+\\w+,[ ]+\\w+,[ ]+\\w+,[ ]+\\w+,[ ]+\\w+,[ ]+\\w+,[ ]+\\w+,[ ]+\\d+,[ ]+\\w+,[ ]+\\d+\\-\\d+\\-\\d+[ ]+\\d+\\:\\d+:\\d+,[ ]+\\d+\\-\\d+\\-\\d+[ ]+\\d+\\:\\d+:\\d+,[ ]+\\w+,[ ]+\\w+,[ ]+\\d+,[ ]+\\w+,[ ]+\\w+,[ ]+\\w+,[ ]+\\w+,[ ]+\\w+,[ ]+(?:[\\w]+[\\:][\\w]+[\\&]){8}(?:[\\w\\.\\:]+),[ ]+\\w+,[ ]+\\w+,(?:[ ]+[\\w:]+,){2}[ ]+\\w+,[ ]+\\w+,[ ]+\\w+,[ ]+\\w+,[ ]+)";
-    private static final String REGEX_DSP_SFP_RRU_SIDE = "(?:[0],[ ]+(?:[\\d][0-9]|[\\d][0-8][0-5]),[ ]+[0-5],[ ]+[C-R]+,[ ]+[0-5],[ ]+(?:[\\w]+,[ ]+|[A-z]+ [A-z,.]+,[ ]+){13}(-?\\d+,[ ]+){15})";
+    private static final String REGEX_DSP_SFP_RRU_SIDE = "(?:\\d,[ ]+\\d+,[ ]+\\d+,[ ]+\\w+,[ ]+\\d+,[ ]+(?:In Position),[ ]+(?:[\\w_]|[\\w])+,[ ]+(?:[\\w]+|[\\w]+[ ]+[\\w]+),[ ]+\\w+,[ ]+\\w+,[ ]+\\d+,[ ]+\\w+,[ ]+\\d+,[ ]+\\d+,[ ]+\\w+,[ ]+\\w+,[ ]+\\w+,[ ]+\\w+,[ ]+(?:\\d+|-\\d+),[ ]+\\d+,[ ]+\\d+,[ ]+\\d+,[ ]+\\d+,[ ]+\\d+,[ ]+\\d+,[ ]+\\d+,[ ]+\\d+,[ ]+(?:\\d+|-\\d+),[ ]+(?:\\d+|-\\d+),[ ]+\\d+,[ ]+(?:\\d+|-\\d+),[ ]+\\d+,[ ]+(?:\\d+|-\\d+),[ ]+)";
     private static final String REGEX_LST_RRUCHAIN = "(?:[\\d]|[\\d][0-9]|[\\d][0-8][0-5]),[ ]+(?:[\\w]+,[ ]+){2}(?:[\\d],[ ]+){5}(?:(?:[\\w]+|[\\w]+ [\\w]+),[ ]+){13}[0-9,A-Z\\-]+,[ ]+[\\w]+,[ ]+[0-9,.:A-Z&]+,[ ]+(?:[\\w]+,[ ]+){2}";
 
     private static final String SM = "<samp data-tooltip=\"SINGLEMODE\">SM</samp>";
@@ -36,36 +35,7 @@ class ParseCSV {
 
     private static String BTS_name;
 
-    private static String BtsNameBBU_dsp;
-    private static int subRackBBU_dsp;
-    private static int slotBBU_dsp;
-    private static int portBBU_dsp_0;
-    private static int portBBU_dsp_1;
-    private static int tx_bbu;
-    private static int rx_bbu;
-    private static String sfp_BBU;
-    private static int sfp_BBU_Speed;
-    private static String sfp_BBU_Mode;
-    private static int sfp_BBU_Wave_Length;
-
-    private static String BtsNameRRU_dsp;
-    private static int subRackRRU_dsp;
-    private static int slotRRU_dsp;
-    private static int chainRRU_dsp;
-    private static int portRRU_dsp_0;
-    private static int portRRU_dsp_1;
-    private static int tx_rru;
-    private static int rx_rru;
-    private static String sfp_RRU;
-    private static int sfp_RRU_Speed;
-    private static String sfp_RRU_Mode;
-    private static int sfp_RRU_Wave_Length;
-
-    private static String BtsNameRRU_lst;
-    private static int subRackRRU_lst;
-    private static int slotRRU_lst;
-    private static int chainRRU_lst;
-    private static int portRRU_lst;
+    private static boolean isTailPort = false;
 
     private static String REGEX(String regex) {
         return String.format("^[\\[]%s[]]", regex);
@@ -76,9 +46,8 @@ class ParseCSV {
 
         arrResult.clear();
         arrScanDoc.clear();
-        dsp_sfp.getArrBBU_port().clear();
-        dsp_sfp.getArrRRU().clear();
-        lst_rruchain.getArrRRU().clear();
+        dsp_sfp.getArrSFP().clear();
+        lst_rruchain.getArrChain().clear();
         lst_rru.getArrChains().clear();
         RRUs.clear();
         RESULT.clear();
@@ -109,12 +78,10 @@ class ParseCSV {
     private static void Filter(String[] row) {
 
         String s = Arrays.toString(row);
-        if (Pattern.matches("^[\\[](?:BTS)\\w+[]]", s)) {
+        if (Pattern.matches(REGEX(REGEX_HEAD), s)) {
             BTS_name = row[0];
         }
-
-        itIsSideBBU(row);
-        itIsSideRRU(row);
+        itIsSFP(row);
         ifChainNo(row);
     }
 
@@ -151,89 +118,105 @@ class ParseCSV {
     private static void AAA() {
 
         /*Проверка на обрыв оптики (или отключенеи RRU)*/
-        if (lst_rruchain.getArrRRU().size() != dsp_sfp.getArrRRU().size()) {
+        if (lst_rruchain.getArrChain().size() != dsp_sfp.getArrSFP().size()) {
             AAAa();
         }
 
-
         if (!lst_rru.getArrChains().isEmpty()) {
-            for (RRU rru : lst_rruchain.getArrRRU()) {
-                for (Chains chains : lst_rru.getArrChains()) {
-                    if (rru.getBtsName().equals(chains.getBtsName())) {
-                        if (rru.getSubRack() == chains.getChain()) {
-                            rru.setSubRack(chains.getSubRack());
+            for (Chain chain : lst_rruchain.getArrChain()) {
+                for (RRUs rrus : lst_rru.getArrChains()) {
+                    if (chain.getBtsName().equals(rrus.getBtsName())) {
+                        if (chain.getChainNo() == rrus.getChain()) {
+                            chain.setChainNo(rrus.getSubRack());
                         }
                     }
                 }
             }
         }
 
-        for (RRU rru : lst_rruchain.getArrRRU()) {
-            for (BBU_Port bbu : dsp_sfp.getArrBBU_port()) {
-                for (RRU rru1 : dsp_sfp.getArrRRU()) {
+
+        SFP sfpHeadToRRU = null, sfpRRUtoHead = null, sfpRRUtoTail = null, sfpTailToRRU = null;
+        for (Chain chain : lst_rruchain.getArrChain()) {
+            for (SFP sfp : dsp_sfp.getArrSFP()) {
+                if (chain.getBtsName().equals(sfp.getBtsName())) {
+                    if (chain.getSubRack().equals(sfp.getSubRack()) & chain.getSlot().equals(sfp.getSlot()) & chain.getHeadPort().equals(sfp.getPort())) {
+                        sfpHeadToRRU = sfp;
+                    }
+
+                    if (chain.getChainNo() == (sfp.getSubRack()) & chain.getTailSubRack() == null) {
+                        sfpRRUtoHead = sfp;
+                    }
+
+                    if (chain.getChainNo() == (sfp.getSubRack()) & chain.getTailSubRack() != null) {
+                        if (sfp.getPort() == 0) {
+                            sfpRRUtoHead = sfp;
+                        }
+
+                        if (sfp.getPort() == 1) {
+                            sfpRRUtoTail = sfp;
+                        }
+                    }
                     try {
-                        BtsNameBBU_dsp = bbu.getBtsName();
-                        slotBBU_dsp = bbu.getSlot();
-                        portBBU_dsp_0 = bbu.getPort0();
-                        tx_bbu = bbu.getTx0();
-                        rx_bbu = bbu.getRx0();
-                        sfp_BBU = bbu.getSfpManufacturerName0();
-                        sfp_BBU_Speed = bbu.getSfpSpeed0();
-                        sfp_BBU_Mode = bbu.getSfpMode0();
-                        sfp_BBU_Wave_Length = bbu.getSfpWaveLength0();
-
-                        BtsNameRRU_dsp = rru1.getBtsName();
-                        subRackRRU_dsp = rru1.getSubRack();
-                        tx_rru = rru1.getTx0();
-                        rx_rru = rru1.getRx0();
-                        sfp_RRU = rru1.getSfpManufacturerName0();
-                        sfp_RRU_Speed = rru1.getSfpSpeed0();
-                        sfp_RRU_Mode = rru1.getSfpMode0();
-                        sfp_RRU_Wave_Length = rru1.getSfpWaveLength0();
-
-                        BtsNameRRU_lst = rru.getBtsName();
-                        subRackRRU_lst = rru.getSubRack();
-                        slotRRU_lst = rru.getSlot();
-                        portRRU_lst = rru.getPort0();
-
-                        /*Фильтруем данные*/
-                        AAAb();
-                    } catch (IndexOutOfBoundsException e) {
-                        e.printStackTrace();
+                        assert chain.getTailSubRack() != null;
+                        if (chain.getTailSubRack().equals(sfp.getSubRack()) & chain.getTailSlot().equals(sfp.getSlot()) & chain.getTailPort().equals(sfp.getPort())) {
+                            sfpTailToRRU = sfp;
+                        }
+                    } catch (NullPointerException ignored) {
                     }
                 }
             }
+
+            if (sfpHeadToRRU != null & sfpRRUtoHead != null) {
+                System.out.println("##################\nsfpHeadToRRU=" + sfpHeadToRRU.display());
+                System.out.println("sfpRRUtoHead=" + sfpRRUtoHead.display());
+                Result result = new Result(sfpHeadToRRU, sfpRRUtoHead);
+                arrResult.add(result);
+            }
+            if (sfpRRUtoTail != null & sfpTailToRRU != null) {
+                System.out.println("sfpRRUtoTail=" + sfpRRUtoTail.display());
+                System.out.println("sfpTailToRRU=" + sfpTailToRRU.display());
+                Result result = new Result(sfpRRUtoTail, sfpTailToRRU);
+                arrResult.add(result);
+            }
+
+            sfpRRUtoTail = null;
+            sfpTailToRRU = null;
         }
+    }
+
+    private static void BBB() {
+
     }
 
     private static void AAAa() {
 
         RRUs.clear();
 
-        for (RRU rru : lst_rruchain.getArrRRU()) {
-            RRUs.add(rru.getSubRack());
+        for (Chain chain : lst_rruchain.getArrChain()) {
+            RRUs.add(chain.getSubRack());
         }
-        for (RRU rru1 : dsp_sfp.getArrRRU()) {
-            RRUs.add(rru1.getSubRack());
+        for (SFP SFP1 : dsp_sfp.getArrSFP()) {
+            RRUs.add(SFP1.getSubRack());
         }
 
         List<Integer> rrus = RRUs.stream().distinct().collect(Collectors.toList());
 
         for (int i = 0; i < rrus.size(); i++) {
-            for (RRU rru : dsp_sfp.getArrRRU()) {
+            for (SFP SFP : dsp_sfp.getArrSFP()) {
                 try {
-                    if (rru.getSubRack() == rrus.get(i)) {
+                    if (SFP.getSubRack().equals(rrus.get(i))) {
                         rrus.remove(i);
                     }
                 } catch (IndexOutOfBoundsException e) {
-                    System.out.print("");
+                    System.out.print("IndexOutOfBoundsException=" + e.getMessage());
                 }
             }
         }
 
         for (int i : rrus) {
-            dsp_sfp.setRRU(new RRU(
+            dsp_sfp.setSFP(new SFP(
                     BTS_name,
+                    "",
                     i,
                     0,
                     0,
@@ -242,57 +225,72 @@ class ParseCSV {
                     NULL,
                     0,
                     null,
-                    0,
-                    1,
-                    0,
-                    0,
-                    NULL,
-                    0,
-                    NULL,
-                    0));
+                    0
+            ));
         }
     }
 
-    private static void AAAb() {
-        if (BtsNameBBU_dsp.equals(BtsNameRRU_dsp) && BtsNameRRU_dsp.equals(BtsNameRRU_lst)) {
-            if (subRackRRU_dsp == subRackRRU_lst) {
-                if (slotBBU_dsp == slotRRU_lst) {
-                    if (portBBU_dsp_0 == portRRU_lst) {
-                        Result result = new Result();
-                        result.setForResult(BtsNameRRU_lst,
-                                slotBBU_dsp, portBBU_dsp_0,
-                                tx_bbu,
-                                rx_bbu,
-                                subRackRRU_lst,
-                                tx_rru,
-                                rx_rru,
-                                sfp_BBU,
-                                sfp_BBU_Speed,
-                                sfp_RRU,
-                                sfp_RRU_Speed,
-                                sfp_BBU_Mode,
-                                sfp_RRU_Mode,
-                                sfp_BBU_Wave_Length,
-                                sfp_RRU_Wave_Length);
-                        arrResult.add(result);
-                    }
-                }
-            }
+    private static String sideSubRack(String[] row) {
+        return Integer.parseInt(row[1].trim()) == 0 ? "BBU" : "RRU";
+    }
+
+    private static int subRack(String[] row) {
+        return Integer.parseInt(row[1].trim());
+    }
+
+    private static int slot(String[] row) {
+        return Integer.parseInt(row[2].trim());
+    }
+
+    private static int port(String[] row) {
+        return Integer.parseInt(row[4].trim());
+    }
+
+    private static int chainNo(String[] row) {
+        return Integer.parseInt(row[0].trim());
+    }
+
+
+    private static int headSubRack(String[] row) {
+        return Integer.parseInt(row[4].trim());
+    }
+
+    private static int headSlot(String[] row) {
+        return Integer.parseInt(row[5].trim());
+    }
+
+    private static int headPort(String[] row) {
+        isTailPort = true;
+        return Integer.parseInt(row[6].trim());
+    }
+
+
+    private static Integer tailSubRack(String[] row) {
+        if (!(row[9].trim()).equals("NULL")) {
+            return Integer.parseInt(row[9].trim());
+        } else {
+            return null;
         }
     }
 
-
-    private static int subRack(String[] row, boolean b) {
-        return b ? Integer.parseInt(row[1].trim()) : Integer.parseInt(row[0].trim());
+    private static Integer tailSlot(String[] row) {
+        if (!(row[10].trim()).equals("NULL")) {
+            return Integer.parseInt(row[10].trim());
+        } else {
+            return null;
+        }
     }
 
-    private static int slot(String[] row, boolean b) {
-        return b ? Integer.parseInt(row[2].trim()) : Integer.parseInt(row[5].trim());
+    private static Integer tailPort(String[] row) {
+        if (!(row[11].trim()).equals("NULL")) {
+            isTailPort = true;
+            return Integer.parseInt(row[11].trim());
+        } else {
+            isTailPort = false;
+            return null;
+        }
     }
 
-    private static int port(String[] row, boolean b) {
-        return b ? Integer.parseInt(row[4].trim()) : Integer.parseInt(row[6].trim());
-    }
 
     private static int chain(String[] row) {
         return Integer.parseInt(row[5].trim());
@@ -307,67 +305,43 @@ class ParseCSV {
     }
 
     private static int sfp_wave_length(String[] row) {
-        return Integer.parseInt(row[10].trim());
+        return Integer.parseInt(row[10].trim()) / 100;
     }
 
-    private static int sfp_speed(String[] row) {
-        return Integer.parseInt(row[12].trim());
+    private static double sfp_speed(String[] row) {
+        double d = Integer.parseInt(row[12].trim());
+        return d / 10;
     }
 
-    private static int tx(String[] row) {
-        return Integer.parseInt(row[27].trim());
+    private static double tx(String[] row) {
+        double d = Integer.parseInt(row[27].trim());
+        return d / 100;
     }
 
-    private static int rx(String[] row) {
-        return Integer.parseInt(row[28].trim());
+    private static double rx(String[] row) {
+        double d = Integer.parseInt(row[28].trim());
+        return d / 100;
     }
 
 
-    private static void itIsSideBBU(String[] row) {
-        if (row.length == 34) {
-            String s = Arrays.toString(row);
-            if (Pattern.matches(REGEX(REGEX_DSP_SFP_BBU_SIDE), s)) {
-                BBU_Port bbuPorts = new BBU_Port(BTS_name,
-                        subRack(row, true),
-                        slot(row, true),
-                        port(row, true),
-                        tx(row),
-                        rx(row),
-                        sfp_manufacturer_name(row),
-                        sfp_speed(row),
-                        sfp_mode(row),
-                        sfp_wave_length(row));
-                dsp_sfp.setBBU_port(bbuPorts);
-                System.out.println(bbuPorts.display());
-            }
-        }
-    }
-
-    private static void itIsSideRRU(String[] row) {
+    private static void itIsSFP(String[] row) {
         if (row.length == 34) {
             String s = Arrays.toString(row);
             if (Pattern.matches(REGEX(REGEX_DSP_SFP_RRU_SIDE), s)) {
-                RRU rru = new RRU(
+                SFP sfp = new SFP(
                         BTS_name,
-                        subRack(row, true),
-                        slot(row, true),
-                        port(row, true),
+                        sideSubRack(row),
+                        subRack(row),
+                        slot(row),
+                        port(row),
                         tx(row),
                         rx(row),
                         sfp_manufacturer_name(row),
                         sfp_speed(row),
                         sfp_mode(row),
-                        sfp_wave_length(row),
-                        0,
-                        0,
-                        0,
-                        NULL,
-                        0,
-                        NULL,
-                        0
+                        sfp_wave_length(row)
                 );
-                dsp_sfp.setRRU(rru);
-                System.out.println(rru.display());
+                dsp_sfp.setSFP(sfp);
             }
         }
     }
@@ -376,35 +350,48 @@ class ParseCSV {
 
         if (row.length == 27) {
             String s1 = Arrays.toString(row);
-            if (Pattern.matches(REGEX(REGEX_LST_RRUCHAIN), s1)) {
-                RRU rru = new RRU(BTS_name, subRack(row, false), slot(row, false),
-                        port(row, false),
-                        0,
-                        0,
-                        null,
-                        0,
-                        null,
-                        0,
+            if (row[1].trim().equals("LOADBALANCE")) {
+                if (Pattern.matches(REGEX(REGEX_LST_RRUCHAIN), s1)) {
+                    Chain chain = new Chain(
+                            BTS_name,
+                            chainNo(row),
+                            headSubRack(row),
+                            headSlot(row),
+                            headPort(row),
+                            tailSubRack(row),
+                            tailSlot(row),
+                            tailPort(row)
+                    );
+                    lst_rruchain.getArrChain(chain);
+                }
+            }
 
-                        0,
-                        0,
-                        0,
-                        null,
-                        0,
-                        null,
-                        0);
-                lst_rruchain.getArrRRU(rru);
-                System.out.println(rru.display());
+            if (row[1].trim().equals("CHAIN")) {
+                if (Pattern.matches(REGEX(REGEX_LST_RRUCHAIN), s1)) {
+                    Chain chain = new Chain(
+                            BTS_name,
+                            chainNo(row),
+                            headSubRack(row),
+                            headSlot(row),
+                            headPort(row),
+                            tailSubRack(row),
+                            tailSlot(row),
+                            tailPort(row)
+                    );
+                    lst_rruchain.getArrChain(chain);
+                }
             }
         }
 
         if (row.length == 47) {
             String s0 = Arrays.toString(row);
             if (Pattern.matches(REGEX(REGEX_LST_RRU), s0)) {
-                Chains chains = new Chains(BTS_name, subRack(row, true), slot(row, true),
+                main.classes.RRUs RRUs = new RRUs(
+                        BTS_name,
+                        subRack(row),
+                        slot(row),
                         chain(row));
-                lst_rru.getArrChains(chains);
-                System.out.println(chains.display());
+                lst_rru.getArrChains(RRUs);
             }
         }
     }

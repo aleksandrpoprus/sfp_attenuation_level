@@ -1,10 +1,10 @@
 package main.classes;
 
-public class Chains extends BTS{
+public class RRUs extends BTS{
 
-    private final int chain;
+    private final Integer chain;
 
-    public Chains(String btsName, int subRack, int slot, int chain) {
+    public RRUs(String btsName, Integer subRack, Integer slot, Integer chain) {
         super(btsName, subRack, slot);
         this.chain = chain;
     }
@@ -15,16 +15,16 @@ public class Chains extends BTS{
     }
 
     @Override
-    public int getSubRack() {
+    public Integer getSubRack() {
         return subRack;
     }
 
     @Override
-    public int getSlot() {
+    public Integer getSlot() {
         return slot;
     }
 
-    public int getChain() {
+    public Integer getChain() {
         return chain;
     }
 

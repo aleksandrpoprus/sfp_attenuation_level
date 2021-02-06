@@ -2,9 +2,9 @@ package main.classes;
 
 public abstract class BTS {
 
-    final String btsName;
-    int subRack;
-    final int slot;
+    String btsName;
+    Integer subRack;
+    Integer slot;
 
     public BTS(String btsName,
                int subRack,
@@ -16,9 +16,9 @@ public abstract class BTS {
 
     public abstract String getBtsName();
 
-    public abstract int getSubRack();
+    public abstract Integer getSubRack();
 
-    public abstract int getSlot();
+    public abstract Integer getSlot();
 
     public abstract String display();
 

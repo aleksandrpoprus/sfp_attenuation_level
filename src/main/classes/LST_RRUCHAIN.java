@@ -4,13 +4,13 @@ import java.util.ArrayList;
 
 public class LST_RRUCHAIN {
 
-    private final ArrayList<RRU> arrRRU = new ArrayList<>();
+    private final ArrayList<Chain> arrChain = new ArrayList<>();
 
-    public ArrayList<RRU> getArrRRU() {
-        return arrRRU;
+    public ArrayList<Chain> getArrChain() {
+        return arrChain;
     }
 
-    public void getArrRRU(RRU rru) {
-        arrRRU.add(rru);
+    public void getArrChain(Chain chain) {
+        arrChain.add(chain);
     }
 }
