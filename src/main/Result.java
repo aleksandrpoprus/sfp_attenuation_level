@@ -1,6 +1,7 @@
-package main.classes;
+package main;
 
 
+import main.classes.SFP;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -245,15 +246,11 @@ public class Result {
         sfp_slot1 = sampSamp("samp sampBlack", Integer.toString(sfp1.getSlot()));
         sfp_port1 = sampSamp("samp sampBlack", Integer.toString(sfp1.getPort()));
 
-        String sector;
-        if (sfp1.getSubRack() > 0) {
-            sector = sector_selector(sfp1.getSubRack());
-        } else {
-            sector = sector_selector(sfp0.getSubRack());
-        }
+        String sector0 = sfp0.getSubRack() > 0 ? sector_selector(sfp1.getSubRack()) : sector_selector(sfp0.getSubRack());
+        String sector1 = sfp1.getSubRack() > 0 ? sector_selector(sfp1.getSubRack()) : sector_selector(sfp0.getSubRack());
 
         return new HtmlBuilder().summary_content(sfp_sideSubRack0, sfp_sub0, sfp_slot0, sfp_port0, sfp_sideSubRack1,
-                sfp_sub1, sfp_slot1, sfp_port1, sector, diff, speed, mode);
+                sfp_sub1, sfp_slot1, sfp_port1, sector0, sector1, diff, speed, mode);
     }
 
     private @NotNull String sector_selector(int i) {
@@ -266,23 +263,23 @@ public class Result {
         sc = ic > 3 ? String.format("%s (indoor?)", ic) : String.format("%s", ic);
 
         if (i >= 60 && i <= 69) {
-            return sampDataTooltip("C" + sc + " R-4900 МГц", "R, ");
+            return sampDataTooltip("C" + sc + " R-4900 МГц", "R;");
         } else if (i >= 70 && i <= 79) {
-            return sampDataTooltip("C" + sc + " R-27900 МГц", "R, ");
+            return sampDataTooltip("C" + sc + " R-27200 МГц", "R;");
         } else if (i >= 90 && i <= 99) {
-            return sampDataTooltip("C" + sc + " GSM-900 МГц", "G");
+            return sampDataTooltip("C" + sc + " GSM-900 МГц", "G;");
         } else if (i >= 100 && i <= 109) {
-            return sampDataTooltip("C" + sc + " GSM-900 МГц", "G, ") + sampDataTooltip("C" + sc + " LTE-800 МГц", "L");
+            return sampDataTooltip("C" + sc + " GSM-900 МГц", "G, ") + sampDataTooltip("C" + sc + " NB IoT-800 МГц", "N;");
         } else if (i >= 180 && i <= 189) {
-            return sampDataTooltip("C" + sc + " DSC-1800 МГц", "D");
+            return sampDataTooltip("C" + sc + " DSC-1800 МГц", "D;");
         } else if (i >= 200 && i <= 209) {
-            return sampDataTooltip("C" + sc + " DSC-1800 МГц", "D, ") + sampDataTooltip("C" + sc + " UMTS-2100 МГц", "U, ") + sampDataTooltip("C" + sc + " LTE-1800 МГц", "L");
+            return sampDataTooltip("C" + sc + " DSC-1800 МГц", "D, ") + sampDataTooltip("C" + sc + " UMTS-2100 МГц", "U, ") + sampDataTooltip("C" + sc + " LTE-1800 МГц", "L;");
         } else if (i >= 210 && i <= 219) {
-            return sampDataTooltip("C" + sc + " UMTS-2100 МГц", "U");
+            return sampDataTooltip("C" + sc + " UMTS-2100 МГц", "U;");
         } else if (i >= 230 && i <= 239) {
-            return sampDataTooltip("C" + sc + " LTE-2600 МГц TDD", "L");
+            return sampDataTooltip("C" + sc + " LTE-2600 МГц TDD", "L;");
         } else if (i >= 240 && i <= 249) {
-            return sampDataTooltip("C" + sc + " LTE-2600 МГц FDD", "L");
+            return sampDataTooltip("C" + sc + " LTE-2600 МГц FDD", "L;");
         } else {
             return "";
         }

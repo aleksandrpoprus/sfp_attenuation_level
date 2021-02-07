@@ -42,7 +42,6 @@ class ParseCSV {
         return String.format("^[\\[]%s[]]", regex);
     }
 
-
     public static void main(String args) {
 
         arrResult.clear();
@@ -82,8 +81,7 @@ class ParseCSV {
         if (Pattern.matches(REGEX(REGEX_HEAD), s)) {
             BTS_name = row[0];
         }
-        itIsSFP(row);
-        ifChainNo(row);
+        createObjects(row);
     }
 
     public static ArrayList<String> getRESULT() {
@@ -123,6 +121,7 @@ class ParseCSV {
             AAAa();
         }
 
+        /*Замена номера СHAIN из LST_RRUCHAIN на номер SubRack из LST_RRU*/
         if (!lst_rru.getArrRRUs().isEmpty()) {
             for (Chain chain : lst_rruchain.getArrChain()) {
                 for (RRUs rrus : lst_rru.getArrRRUs()) {
@@ -134,7 +133,6 @@ class ParseCSV {
                 }
             }
         }
-
 
         SFP sfpHeadToRRU = null, sfpRRUtoHead = null, sfpRRUtoTail = null, sfpTailToRRU = null;
         for (Chain chain : lst_rruchain.getArrChain()) {
@@ -213,18 +211,7 @@ class ParseCSV {
         }
 
         for (int i : rrus) {
-            dsp_sfp.setSFP(new SFP(
-                    BTS_name,
-                    "",
-                    i,
-                    0,
-                    0,
-                    0,
-                    0,
-                    NULL,
-                    0,
-                    null,
-                    0
+            dsp_sfp.setSFP(new SFP(BTS_name, "", i, 0, 0, 0, 0, NULL, 0, null, 0
             ));
         }
     }
@@ -249,7 +236,6 @@ class ParseCSV {
         return Integer.parseInt(row[0].trim());
     }
 
-
     private static int headSubRack(String @NotNull [] row) {
         return Integer.parseInt(row[4].trim());
     }
@@ -261,7 +247,6 @@ class ParseCSV {
     private static int headPort(String @NotNull [] row) {
         return Integer.parseInt(row[6].trim());
     }
-
 
     private static @Nullable Integer tailSubRack(String @NotNull [] row) {
         if (!(row[9].trim()).equals("NULL")) {
@@ -286,7 +271,6 @@ class ParseCSV {
             return null;
         }
     }
-
 
     private static int chain(String @NotNull [] row) {
         return Integer.parseInt(row[5].trim());
@@ -320,61 +304,28 @@ class ParseCSV {
         return d / 100;
     }
 
+    private static void createObjects(String @NotNull [] row) {
 
-    private static void itIsSFP(String @NotNull [] row) {
         if (row.length == 34) {
             String s = Arrays.toString(row);
             if (Pattern.matches(REGEX(REGEX_DSP_SFP_RRU_SIDE), s)) {
-                SFP sfp = new SFP(
-                        BTS_name,
-                        sideSubRack(row),
-                        subRack(row),
-                        slot(row),
-                        port(row),
-                        tx(row),
-                        rx(row),
-                        sfp_manufacturer_name(row),
-                        sfp_speed(row),
-                        sfp_mode(row),
-                        sfp_wave_length(row)
-                );
+                SFP sfp = new SFP(BTS_name, sideSubRack(row), subRack(row), slot(row), port(row), tx(row), rx(row), sfp_manufacturer_name(row), sfp_speed(row), sfp_mode(row), sfp_wave_length(row));
                 dsp_sfp.setSFP(sfp);
             }
         }
-    }
-
-    private static void ifChainNo(String @NotNull [] row) {
 
         if (row.length == 27) {
             String s1 = Arrays.toString(row);
             if (row[1].trim().equals("LOADBALANCE")) {
                 if (Pattern.matches(REGEX(REGEX_LST_RRUCHAIN), s1)) {
-                    Chain chain = new Chain(
-                            BTS_name,
-                            chainNo(row),
-                            headSubRack(row),
-                            headSlot(row),
-                            headPort(row),
-                            tailSubRack(row),
-                            tailSlot(row),
-                            tailPort(row)
-                    );
+                    Chain chain = new Chain(BTS_name, chainNo(row), headSubRack(row), headSlot(row), headPort(row), tailSubRack(row), tailSlot(row), tailPort(row));
                     lst_rruchain.getArrChain(chain);
                 }
             }
 
             if (row[1].trim().equals("CHAIN")) {
                 if (Pattern.matches(REGEX(REGEX_LST_RRUCHAIN), s1)) {
-                    Chain chain = new Chain(
-                            BTS_name,
-                            chainNo(row),
-                            headSubRack(row),
-                            headSlot(row),
-                            headPort(row),
-                            tailSubRack(row),
-                            tailSlot(row),
-                            tailPort(row)
-                    );
+                    Chain chain = new Chain(BTS_name, chainNo(row), headSubRack(row), headSlot(row), headPort(row), tailSubRack(row), tailSlot(row), tailPort(row));
                     lst_rruchain.getArrChain(chain);
                 }
             }
@@ -383,11 +334,7 @@ class ParseCSV {
         if (row.length == 47) {
             String s0 = Arrays.toString(row);
             if (Pattern.matches(REGEX(REGEX_LST_RRU), s0)) {
-                main.classes.RRUs RRUs = new RRUs(
-                        BTS_name,
-                        subRack(row),
-                        slot(row),
-                        chain(row));
+                main.classes.RRUs RRUs = new RRUs(BTS_name, subRack(row), slot(row), chain(row));
                 lst_rru.getArrRRUs(RRUs);
             }
         }
