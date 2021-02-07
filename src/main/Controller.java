@@ -11,6 +11,8 @@ import javafx.scene.web.WebView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import main.classes.HtmlBuilder;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -77,10 +79,10 @@ public class Controller {
     public void html() {
         String html = new HtmlBuilder(body).htmlBuilder();
         webEngine.loadContent(html);
-        System.out.println(html);
+//        System.out.println(html);
     }
 
-    public void onDragDropped(DragEvent dragEvent) {
+    public void onDragDropped(@NotNull DragEvent dragEvent) {
         Dragboard dragboard = dragEvent.getDragboard();
         boolean success = false;
 
@@ -93,7 +95,7 @@ public class Controller {
         dragEvent.consume();
     }
 
-    private String getExtension(String fileName) {
+    private @NotNull String getExtension(@NotNull String fileName) {
         String extension = "";
         int i = fileName.lastIndexOf('.');
         if (i > 0 && i < fileName.length() - 1) {
@@ -102,7 +104,7 @@ public class Controller {
         return extension;
     }
 
-    private void getDragEvent(Dragboard dragboard, DragEvent dragEvent) {
+    private void getDragEvent(Dragboard dragboard, @NotNull DragEvent dragEvent) {
         if (validExtensions.containsAll(dragEvent.getDragboard().getFiles().stream().map(file -> getExtension(file.getName())).collect(Collectors.toList()))) {
             for (int i = 0; i < dragboard.getFiles().size(); i++) {
                 ParseCSV.main(dragboard.getFiles().get(i).getAbsolutePath());
@@ -125,7 +127,8 @@ public class Controller {
     }
 
 
-    private File getFilePath() {
+    @Contract(" -> new")
+    private @NotNull File getFilePath() {
         Preferences prefs = Preferences.userNodeForPackage(Main.class);
         String filePath = prefs.get("filePath", null);
         if (filePath != null) {

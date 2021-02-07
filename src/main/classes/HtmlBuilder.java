@@ -28,143 +28,7 @@ public class HtmlBuilder {
 
 
     private String cssStyle() {
-        return "h1 {\n" +
-                "        font-family: Verdana, Arial, Helvetica, sans-serif;\n" +
-                "        font-size: 12pt;\n" +
-                "        font-weight: bold;\n" +
-                "        text-align: center;\n" +
-                "        padding: 2px;\n" +
-                "    }\n" +
-                "\n" +
-                "    p {\n" +
-                "        font-family: Verdana, Arial, Helvetica, sans-serif;\n" +
-                "        font-size: 10pt;\n" +
-                "        text-align: left;\n" +
-                "        padding: 2px;\n" +
-                "    }\n" +
-                "\n" +
-                "    .p0 {\n" +
-                "        font-weight: bold;\n" +
-                "        background: lightblue;\n" +
-                "        text-align: center;\n" +
-                "    }\n" +
-                "\n" +
-                "    .p1 {\n" +
-                "        font-weight: bold;\n" +
-                "    }\n" +
-                "\n" +
-                "    samp {\n" +
-                "        font-family: Verdana, Arial, Helvetica, sans-serif;\n" +
-                "        font-weight: bold;\n" +
-                "        font-size: 10pt;\n" +
-                "    }\n" +
-                "\n" +
-                "    .sampGreen {\n" +
-                "        color: green;\n" +
-                "    }\n" +
-                "\n" +
-                "    .sampRed {\n" +
-                "        color: red;\n" +
-                "    }\n" +
-                "\n" +
-                "    .sampBlue {\n" +
-                "        color: blue;\n" +
-                "    }\n" +
-                "\n" +
-                "    .sampYellow {\n" +
-                "        color: orange;\n" +
-                "    }\n" +
-                "\n" +
-                "    .sampPurple {\n" +
-                "        text-transform: uppercase;\n" +
-                "        color: purple;\n" +
-                "    }\n" +
-                "\n" +
-                "    .sampBlack {\n" +
-                "        color: black;\n" +
-                "    }\n" +
-                "\n" +
-                "    div {\n" +
-                "        display: compact;\n" +
-                "        flex-direction: column;\n" +
-                "        padding: 8px;\n" +
-                "    }\n" +
-                "\n" +
-                "    .div0 {\n" +
-                "        border: 2px solid black;\n" +
-                "        background-color: lightgoldenrodyellow;\n" +
-                "        margin-top: 20px;\n" +
-                "        margin-bottom: 20px;\n" +
-                "        border-radius: 20px 20px 20px 20px;\n" +
-                "    }\n" +
-                "\n" +
-                "    .div1 {\n" +
-                "        border: 2px solid black;\n" +
-                "        border-radius: 10px 10px 10px 10px;\n" +
-                "        margin-top: 30px;\n" +
-                "        background-color: lightgray;\n" +
-                "    }\n" +
-                "\n" +
-                "    .div2 {\n" +
-                "        padding: 2px;\n" +
-                "        margin: 2px;\n" +
-                "    }\n" +
-                "\n" +
-                "    .warningGreen {\n" +
-                "        font-size: 14pt;\n" +
-                "        color: green;\n" +
-                "    }\n" +
-                "\n" +
-                "    .warningRed {\n" +
-                "        font-size: 14pt;\n" +
-                "        color: red;\n" +
-                "    }\n" +
-                "\n" +
-                "    .warningYellow {\n" +
-                "        font-size: 14pt;\n" +
-                "        color: orange;\n" +
-                "    }\n" +
-                "\n" +
-                "    [data-tooltip] {\n" +
-                "        position: relative;\n" +
-                "    }\n" +
-                "\n" +
-                "    [data-tooltip]::after {\n" +
-                "        content: attr(data-tooltip);\n" +
-                "        position: absolute;\n" +
-                "        text-align: center;\n" +
-                "        font-size: 9pt;\n" +
-                "        white-space: nowrap;\n" +
-                "        width: auto;\n" +
-                "        font-weight: bold;\n" +
-                "        left: 0;\n" +
-                "        top: 0;\n" +
-                "        background: white;\n" +
-                "        color: black;\n" +
-                "        padding: 0.2em;\n" +
-                "        pointer-events: none;\n" +
-                "        opacity: 0;\n" +
-                "        transition: 0.5s;\n" +
-                "    }\n" +
-                "\n" +
-                "    [data-tooltip]:hover::after {\n" +
-                "        opacity: 1.0;\n" +
-                "        top: 1em;\n" +
-                "        left: -2em;\n" +
-                "    }\n" +
-                "\n" +
-                "    details[open] div {\n" +
-                "        animation: spoiler 0.5s;\n" +
-                "    }\n" +
-                "\n" +
-                "    @keyframes spoiler {\n" +
-                "        0% {\n" +
-                "            opacity: 0;\n" +
-                "        }\n" +
-                "        100% {\n" +
-                "            opacity: 1;\n" +
-                "        }\n" +
-                "    }";
+        return "h1 {font-family: Verdana, Arial, Helvetica, sans-serif;font-size: 12pt;font-weight: bold;text-align: center;padding: 2px;}" + "p {font-family: Verdana, Arial, Helvetica, sans-serif;font-size: 10pt;text-align: left;padding: 2px;}" + ".p0 {font-weight: bold;background: lightblue;text-align: center;}" + ".p1 {font-weight: bold;}" + "samp {font-family: Verdana, Arial, Helvetica, sans-serif;font-weight: bold;font-size: 10pt;}" + ".sampGreen {color: green;}" + ".sampRed {color: red;}" + ".sampBlue {color: blue;}" + ".sampYellow {color: orange;}" + ".sampPurple {text-transform: uppercase;color: purple;}" + ".sampBlack {color: black;}" + "div {display: compact;flex-direction: column;padding: 8px;}" + ".div0 {border: 2px solid black;background-color: lightgoldenrodyellow;margin-top: 20px;margin-bottom: 20px;border-radius: 20px 20px 20px 20px;}" + ".div1 {border: 2px solid black;border-radius: 10px 10px 10px 10px;margin-top: 30px;background-color: lightgray;}" + ".div2 {padding: 2px;margin: 2px;}" + ".warningGreen {font-size: 14pt;color: green;}" + ".warningRed {font-size: 14pt;color: red;}" + ".warningYellow {font-size: 14pt;color: orange;}" + "[data-tooltip] {position: relative;}" + "[data-tooltip]::after {content: attr(data-tooltip);position: absolute;text-align: center;font-size: 9pt;white-space: nowrap;width: auto;font-weight: bold;left: 0;top: 0;background: white;color: black;padding: 0.2em;pointer-events: none;opacity: 0;transition: 0.5s;}" + "[data-tooltip]:hover::after {opacity: 1.0;top: 1em;left: -2em;}" + "details[open] div {animation: spoiler 0.5s;}" + "@keyframes spoiler { 0% {opacity: 0;} 100% {opacity: 1;} }";
     }
 
 
@@ -181,73 +45,41 @@ public class HtmlBuilder {
                 "</head>";
     }
 
-    public String summary_content(
-            String BBU_sideSubRack,
-            String BBU_sub,
-            String BBU_slot,
-            String BBU_port,
-            String RRU_sideSubRack,
-            String RRU_sub,
-            String RRU_slot,
-            String RRU_port,
-            String sector,
-            String diff,
-            String speed,
-            String mode
+    public String summary_content(String sfp_sideSubRack0, String sfp_sub0, String sfp_slot0, String sfp_port0,
+                                  String sfp_sideSubRack1, String sfp_sub1, String sfp_slot1, String sfp_port1,
+                                  String sector, String diff, String speed, String mode
     ) {
-        return BBU_sideSubRack + " (" + BBU_sub + ", " + BBU_slot + ", " + BBU_port + ") " +
-                "<--> " +
-                RRU_sideSubRack + " (" + RRU_sub + ", " + RRU_slot + ", " + RRU_port + ") " +
+        return sfp_sideSubRack0 + " (" + sfp_sub0 + ", " + sfp_slot0 + ", " + sfp_port0 + ") " +
+                "<-> " +
+                sfp_sideSubRack1 + " (" + sfp_sub1 + ", " + sfp_slot1 + ", " + sfp_port1 + ") " +
                 "trx: " + diff +
                 "tcr: " + speed +
                 "mode: " + mode;
     }
 
-    public String vols_attenuation_content_0(
-            String BBU_sideSubRack,
-            String BBU_sub,
-            String BBU_slot,
-            String BBU_port,
-            String TRX1,
-            String TRXd,
-            String TRX2,
-            String RRU_sideSubRack,
-            String RRU_sub,
-            String RRU_slot,
-            String RRU_port
+    public String vols_attenuation_content_0(String sfp_sideSubRack0, String sfp_sub0, String sfp_slot0,
+                                             String sfp_port0, String TRX1, String TRXd, String TRX2,
+                                             String sfp_sideSubRack1, String sfp_sub1, String sfp_slot1,
+                                             String sfp_port1
     ) {
         return "<p>" +
-                BBU_sideSubRack + " (" + BBU_sub + ", " + BBU_slot + ", " + BBU_port + ") " +
+                sfp_sideSubRack0 + " (" + sfp_sub0 + ", " + sfp_slot0 + ", " + sfp_port0 + "); " +
                 TRX1 +
                 "(" +
                 TRXd +
                 ")" +
                 TRX2 +
-                RRU_sideSubRack + " (" + RRU_sub + ", " + RRU_slot + ", " + RRU_port + ") " +
+                sfp_sideSubRack1 + " (" + sfp_sub1 + ", " + sfp_slot1 + ", " + sfp_port1 + "); " +
                 "</p>";
     }
 
-    public String sfp_info_content(
-            String BBU_sideSubRack,
-            String BBU_sub,
-            String BBU_slot,
-            String BBU_port,
-            String MN0,
-            String TCR,
-            String s0,
-            String mode0,
-            String WL0,
-            String RRU_sideSubRack,
-            String RRU_sub,
-            String RRU_slot,
-            String RRU_port,
-            String MN1,
-            String s1,
-            String mode1,
-            String WL1
+    public String sfp_info_content(String sfp_sideSubRack0, String sfp_sub0, String sfp_slot0, String sfp_port0,
+                                   String MN0, String TCR, String s0, String mode0, String WL0, String sfp_sideSubRack1,
+                                   String sfp_sub1, String sfp_slot1, String sfp_port1, String MN1, String s1,
+                                   String mode1, String WL1
     ) {
-        String BBUsub = BBU_sideSubRack + " (" + BBU_sub + ", " + BBU_slot + ", " + BBU_port + ") ";
-        String RRUsub = RRU_sideSubRack + " (" + RRU_sub + ", " + RRU_slot + ", " + RRU_port + ") ";
+        String BBUsub = sfp_sideSubRack0 + " (" + sfp_sub0 + ", " + sfp_slot0 + ", " + sfp_port0 + ") ";
+        String RRUsub = sfp_sideSubRack1 + " (" + sfp_sub1 + ", " + sfp_slot1 + ", " + sfp_port1 + ") ";
 
         String BBU = AAA(BBUsub, MN0, TCR, s0, mode0, WL0);
         String RRU = AAA(RRUsub, MN1, TCR, s1, mode1, WL1);
@@ -280,7 +112,7 @@ public class HtmlBuilder {
     }
 
     private String js() {
-        return "<script type=\"text/javascript\">alert('Yo!');</script>\n";
+        return "<script type=\"text/javascript\">alert('Yo!');</script>";
     }
 
     public String htmlBuilderHow() {

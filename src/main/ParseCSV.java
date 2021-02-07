@@ -2,6 +2,9 @@ package main;
 
 import au.com.bytecode.opencsv.CSVReader;
 import main.classes.*;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -35,8 +38,6 @@ class ParseCSV {
 
     private static String BTS_name;
 
-    private static boolean isTailPort = false;
-
     private static String REGEX(String regex) {
         return String.format("^[\\[]%s[]]", regex);
     }
@@ -48,7 +49,7 @@ class ParseCSV {
         arrScanDoc.clear();
         dsp_sfp.getArrSFP().clear();
         lst_rruchain.getArrChain().clear();
-        lst_rru.getArrChains().clear();
+        lst_rru.getArrRRUs().clear();
         RRUs.clear();
         RESULT.clear();
 
@@ -60,7 +61,7 @@ class ParseCSV {
         }
     }
 
-    private static void ScanDoc(CSVReader reader) {
+    private static void ScanDoc(@NotNull CSVReader reader) {
         try {
             List<String[]> allRows = reader.readAll();
             for (String[] row : allRows) {
@@ -122,9 +123,9 @@ class ParseCSV {
             AAAa();
         }
 
-        if (!lst_rru.getArrChains().isEmpty()) {
+        if (!lst_rru.getArrRRUs().isEmpty()) {
             for (Chain chain : lst_rruchain.getArrChain()) {
-                for (RRUs rrus : lst_rru.getArrChains()) {
+                for (RRUs rrus : lst_rru.getArrRRUs()) {
                     if (chain.getBtsName().equals(rrus.getBtsName())) {
                         if (chain.getChainNo() == rrus.getChain()) {
                             chain.setChainNo(rrus.getSubRack());
@@ -167,8 +168,10 @@ class ParseCSV {
             }
 
             if (sfpHeadToRRU != null & sfpRRUtoHead != null) {
-                System.out.println("##################\nsfpHeadToRRU=" + sfpHeadToRRU.display());
-                System.out.println("sfpRRUtoHead=" + sfpRRUtoHead.display());
+                System.out.println("##################\n" +
+                        chain.display() +
+                        "\nsfpHeadToRRU=" + sfpHeadToRRU.display()
+                        + "\nsfpRRUtoHead=" + sfpRRUtoHead.display());
                 Result result = new Result(sfpHeadToRRU, sfpRRUtoHead);
                 arrResult.add(result);
             }
@@ -182,10 +185,6 @@ class ParseCSV {
             sfpRRUtoTail = null;
             sfpTailToRRU = null;
         }
-    }
-
-    private static void BBB() {
-
     }
 
     private static void AAAa() {
@@ -230,42 +229,41 @@ class ParseCSV {
         }
     }
 
-    private static String sideSubRack(String[] row) {
+    private static @NotNull String sideSubRack(String @NotNull [] row) {
         return Integer.parseInt(row[1].trim()) == 0 ? "BBU" : "RRU";
     }
 
-    private static int subRack(String[] row) {
+    private static int subRack(String @NotNull [] row) {
         return Integer.parseInt(row[1].trim());
     }
 
-    private static int slot(String[] row) {
+    private static int slot(String @NotNull [] row) {
         return Integer.parseInt(row[2].trim());
     }
 
-    private static int port(String[] row) {
+    private static int port(String @NotNull [] row) {
         return Integer.parseInt(row[4].trim());
     }
 
-    private static int chainNo(String[] row) {
+    private static int chainNo(String @NotNull [] row) {
         return Integer.parseInt(row[0].trim());
     }
 
 
-    private static int headSubRack(String[] row) {
+    private static int headSubRack(String @NotNull [] row) {
         return Integer.parseInt(row[4].trim());
     }
 
-    private static int headSlot(String[] row) {
+    private static int headSlot(String @NotNull [] row) {
         return Integer.parseInt(row[5].trim());
     }
 
-    private static int headPort(String[] row) {
-        isTailPort = true;
+    private static int headPort(String @NotNull [] row) {
         return Integer.parseInt(row[6].trim());
     }
 
 
-    private static Integer tailSubRack(String[] row) {
+    private static @Nullable Integer tailSubRack(String @NotNull [] row) {
         if (!(row[9].trim()).equals("NULL")) {
             return Integer.parseInt(row[9].trim());
         } else {
@@ -273,7 +271,7 @@ class ParseCSV {
         }
     }
 
-    private static Integer tailSlot(String[] row) {
+    private static @Nullable Integer tailSlot(String @NotNull [] row) {
         if (!(row[10].trim()).equals("NULL")) {
             return Integer.parseInt(row[10].trim());
         } else {
@@ -281,50 +279,49 @@ class ParseCSV {
         }
     }
 
-    private static Integer tailPort(String[] row) {
+    private static @Nullable Integer tailPort(String @NotNull [] row) {
         if (!(row[11].trim()).equals("NULL")) {
-            isTailPort = true;
             return Integer.parseInt(row[11].trim());
         } else {
-            isTailPort = false;
             return null;
         }
     }
 
 
-    private static int chain(String[] row) {
+    private static int chain(String @NotNull [] row) {
         return Integer.parseInt(row[5].trim());
     }
 
-    private static String sfp_manufacturer_name(String[] row) {
+    @Contract(pure = true)
+    private static @NotNull String sfp_manufacturer_name(String @NotNull [] row) {
         return row[7].trim();
     }
 
-    private static String sfp_mode(String[] row) {
+    private static String sfp_mode(String @NotNull [] row) {
         return row[9].trim().equals("SINGLEMODE") ? SM : MM;
     }
 
-    private static int sfp_wave_length(String[] row) {
+    private static int sfp_wave_length(String @NotNull [] row) {
         return Integer.parseInt(row[10].trim()) / 100;
     }
 
-    private static double sfp_speed(String[] row) {
+    private static double sfp_speed(String @NotNull [] row) {
         double d = Integer.parseInt(row[12].trim());
         return d / 10;
     }
 
-    private static double tx(String[] row) {
+    private static double tx(String @NotNull [] row) {
         double d = Integer.parseInt(row[27].trim());
         return d / 100;
     }
 
-    private static double rx(String[] row) {
+    private static double rx(String @NotNull [] row) {
         double d = Integer.parseInt(row[28].trim());
         return d / 100;
     }
 
 
-    private static void itIsSFP(String[] row) {
+    private static void itIsSFP(String @NotNull [] row) {
         if (row.length == 34) {
             String s = Arrays.toString(row);
             if (Pattern.matches(REGEX(REGEX_DSP_SFP_RRU_SIDE), s)) {
@@ -346,7 +343,7 @@ class ParseCSV {
         }
     }
 
-    private static void ifChainNo(String[] row) {
+    private static void ifChainNo(String @NotNull [] row) {
 
         if (row.length == 27) {
             String s1 = Arrays.toString(row);
@@ -391,7 +388,7 @@ class ParseCSV {
                         subRack(row),
                         slot(row),
                         chain(row));
-                lst_rru.getArrChains(RRUs);
+                lst_rru.getArrRRUs(RRUs);
             }
         }
     }

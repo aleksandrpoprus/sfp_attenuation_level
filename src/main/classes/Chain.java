@@ -7,14 +7,8 @@ public class Chain extends BTS {
     Integer tailSlot;
     Integer tailPort;
 
-    public Chain(String btsName,
-                 int chainNo,
-                 Integer subRack,
-                 Integer slot,
-                 Integer headPort,
-                 Integer tailSubRack,
-                 Integer tailSlot,
-                 Integer tailPort) {
+    public Chain(String btsName, int chainNo, Integer subRack, Integer slot, Integer headPort, Integer tailSubRack,
+                 Integer tailSlot, Integer tailPort) {
         super(btsName, subRack, slot);
         this.chainNo = chainNo;
         this.headPort = headPort;
@@ -22,7 +16,6 @@ public class Chain extends BTS {
         this.tailSlot = tailSlot;
         this.tailPort = tailPort;
     }
-
 
     @Override
     public String getBtsName() {
@@ -43,6 +36,10 @@ public class Chain extends BTS {
         return chainNo;
     }
 
+    public void setChainNo(Integer subRack) {
+        this.chainNo = subRack;
+    }
+
     public Integer getHeadPort() {
         return headPort;
     }
@@ -61,10 +58,15 @@ public class Chain extends BTS {
 
     @Override
     public String display() {
-        return null;
-    }
-
-    public void setChainNo(Integer subRack) {
-        this.chainNo = subRack;
+        return "Chain{" +
+                "btsName='" + btsName + '\'' +
+                ", chainNo=" + chainNo +
+                ", subRack=" + subRack +
+                ", slot=" + slot +
+                ", headPort=" + headPort +
+                ", tailSubRack=" + tailSubRack +
+                ", tailSlot=" + tailSlot +
+                ", tailPort=" + tailPort +
+                '}';
     }
 }

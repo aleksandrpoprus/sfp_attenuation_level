@@ -1,14 +1,30 @@
 package main.classes;
 
 
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+
 public class Result {
 
-    private SFP sfp0;
-    private SFP sfp1;
-
+    private final SFP sfp0;
+    private final SFP sfp1;
     private Double difference1;
     private Double difference2;
-
+    private String sfp_sideSubRack0;
+    private String sfp_sub0;
+    private String sfp_slot0;
+    private String sfp_port0;
+    private String sfp_sideSubRack1;
+    private String sfp_sub1;
+    private String sfp_slot1;
+    private String sfp_port1;
+    private String sfp_TX0;
+    private String sfp_RX0;
+    private String sfp_TX1;
+    private String sfp_RX1;
+    private boolean ws0 = true;
+    private boolean ws1 = true;
+    private boolean ws2 = true;
     private String warningGreen, warningRed, warningYellow;
     private String TCR;
     private String SM, MM, NULL;
@@ -24,15 +40,15 @@ public class Result {
         return sfp0.getBtsName();
     }
 
-    public Double DifferenceRxTx(SFP sfp0, SFP sfp1) {
+    public Double DifferenceRxTx() {
         return (sfp0.getTx() - sfp1.getRx() < 0 ? (sfp0.getTx() - sfp1.getRx()) * -1 : sfp0.getTx() - sfp1.getRx());
     }
 
-    public Double DifferenceTxRx(SFP sfp0, SFP sfp1) {
+    public Double DifferenceTxRx() {
         return (sfp0.getRx() - sfp1.getTx() < 0 ? (sfp0.getRx() - sfp1.getTx()) * -1 : sfp0.getRx() - sfp1.getTx());
     }
 
-    public String sfp_info_selector(SFP sfp0, SFP sfp1) {
+    public String sfp_info_selector() {
         String s;
         if (sfp0.getSfpSpeed() != sfp1.getSfpSpeed() && (sfp0.getSfpMode().equals(SM) && sfp1.getSfpMode().equals(SM))) {
             s = sfp_info(true, false, false);
@@ -50,8 +66,8 @@ public class Result {
 
     public String getResult(int i) {
 
-        difference1 = DifferenceRxTx(sfp0, sfp1);
-        difference2 = DifferenceTxRx(sfp0, sfp1);
+        difference1 = DifferenceRxTx();
+        difference2 = DifferenceTxRx();
 
         warningGreen = sampSamp("warningGreen", " ▲ ");
         warningRed = sampSamp("warningRed", " ▲ ");
@@ -63,7 +79,7 @@ public class Result {
         MM = sampDataTooltip("MULTIMODE", "MM");
         NULL = sampDataTooltip("NULL", "NULL");
 
-        String result0, result1 = "";
+        String result0;
 
         result0 = String.format(
                 "%s</summary>" +
@@ -77,10 +93,10 @@ public class Result {
                         "%s" +
                         "</div>" +
                         "</div>",
-                details_summary(sfp0, sfp1, difference1, difference2),
-                trx_selector(true, difference1),
-                trx_selector(false, difference2),
-                sfp_info_selector(sfp0, sfp1));
+                details_summary(),
+                trx_selector(true),
+                trx_selector(false),
+                sfp_info_selector());
 
         if (warningSignal) {
             return "<details open>" + "<summary style=\"text-align: center\">" + i + ": " + result0 + "</details>";
@@ -89,53 +105,30 @@ public class Result {
         }
     }
 
-
     private String sfp_attenuation(boolean b0, boolean b1, boolean b2) {
 
-        String BBU_sideSubRack,
-                BBU_sub0,
-                BBU_slot0,
-                BBU_port0,
-                BBU_TX0 = "",
-                BBU_RX0 = "",
-                TRXd0,
-                RRU_TX0 = "",
-                RRU_RX0 = "",
-                RRU_sideSubRack,
-                RRU_sub0,
-                RRU_slot0,
-                RRU_port0;
-
         if (b0) {
-            BBU_TX0 = String.format("Tx= %.2f dbm --", sfp0.getTx());
-            RRU_RX0 = String.format("--> Rx= %.2f dbm ", sfp1.getRx());
+            sfp_TX0 = String.format("Tx= %.2f dbm --", sfp0.getTx());
+            sfp_RX1 = String.format("--> Rx= %.2f dbm ", sfp1.getRx());
         } else {
-            BBU_RX0 = String.format("RX= %.2f dbm <--", sfp0.getRx());
-            RRU_TX0 = String.format("-- TX= %.2f dbm ", sfp1.getTx());
+            sfp_RX0 = String.format("Rx= %.2f dbm <--", sfp0.getRx());
+            sfp_TX1 = String.format("-- Tx= %.2f dbm ", sfp1.getTx());
         }
 
-        BBU_sideSubRack = sfp0.getSideSubRack();
-        BBU_sub0 = sampSamp("samp sampBlack", Integer.toString(sfp0.getSubRack()));
-        BBU_slot0 = sampSamp("samp sampBlack", Integer.toString(sfp0.getSlot()));
-        BBU_port0 = sampSamp("samp sampBlack", Integer.toString(sfp0.getPort()));
-        TRXd0 = samp_selector(b0, b1, b2);
-        RRU_sideSubRack = sfp1.getSideSubRack();
-        RRU_sub0 = sampSamp("samp sampBlack", Integer.toString(sfp1.getSubRack()));
-        RRU_slot0 = sampSamp("samp sampBlack", Integer.toString(sfp1.getSlot()));
-        RRU_port0 = sampSamp("samp sampBlack", Integer.toString(sfp1.getPort()));
+        String TRxd = samp_selector(b0, b1, b2);
 
         return new HtmlBuilder().vols_attenuation_content_0(
-                BBU_sideSubRack,
-                BBU_sub0,
-                BBU_slot0,
-                BBU_port0,
-                b0 ? BBU_TX0 : BBU_RX0,
-                TRXd0,
-                !b0 ? RRU_TX0 : RRU_RX0,
-                RRU_sideSubRack,
-                RRU_sub0,
-                RRU_slot0,
-                RRU_port0
+                sfp_sideSubRack0,
+                sfp_sub0,
+                sfp_slot0,
+                sfp_port0,
+                b0 ? sfp_TX0 : sfp_RX0,
+                TRxd,
+                !b0 ? sfp_TX1 : sfp_RX1,
+                sfp_sideSubRack1,
+                sfp_sub1,
+                sfp_slot1,
+                sfp_port1
         );
     }
 
@@ -144,8 +137,8 @@ public class Result {
         String s0, s1, mode0, mode1;
 
         if (b0) {
-            s0 = sampDataTooltip("В RRU sfp c инным TCR", sampSamp("samp sampRed", String.format("%.1f", sfp0.getSfpSpeed())));
-            s1 = sampDataTooltip("В BBU sfp c инным TCR", sampSamp("samp sampRed", String.format("%.1f", sfp1.getSfpSpeed())));
+            s0 = sampDataTooltip("В " + sfp1.getSideSubRack() + " sfp c инным TCR", sampSamp("samp sampRed", String.format("%.1f", sfp0.getSfpSpeed())));
+            s1 = sampDataTooltip("В " + sfp0.getSideSubRack() + " sfp c инным TCR", sampSamp("samp sampRed", String.format("%.1f", sfp1.getSfpSpeed())));
             mode0 = sampSamp("samp sampBlue", sfp0.getSfpMode());
             mode1 = sampSamp("samp sampBlue", sfp1.getSfpMode());
         } else if (b1) {
@@ -165,55 +158,37 @@ public class Result {
             mode1 = sampSamp("samp sampBlue", sfp1.getSfpMode());
         }
 
-        String BBU_sideSubRack,
-                BBU_sub,
-                BBU_slot,
-                BBU_port,
-                BBU_MN,
-                BBU_WL,
-                RRU_sideSubRack,
-                RRU_sub,
-                RRU_slot,
-                RRU_port,
-                RRU_MN,
-                RRU_WL;
 
-        BBU_sideSubRack = sfp0.getSideSubRack();
-        BBU_sub = sampSamp("samp sampBlack", Integer.toString(sfp0.getSubRack()));
-        BBU_slot = sampSamp("samp sampBlack", Integer.toString(sfp0.getSlot()));
-        BBU_port = sampSamp("samp sampBlack", Integer.toString(sfp0.getPort()));
-        BBU_MN = sampDataTooltip("Manufacturer name", sampSamp("samp sampPurple", sfp0.getSfpManufacturerName()));
-        BBU_WL = sampSamp("samp sampBlue", Integer.toString(sfp0.getSfpWaveLength()));
+        String sfp_MN0 = sampDataTooltip("Manufacturer name", sampSamp("samp sampPurple", sfp0.getSfpManufacturerName()));
+        String sfp_WL0 = sampSamp("samp sampBlue", Integer.toString(sfp0.getSfpWaveLength()));
 
-        RRU_sideSubRack = sfp1.getSideSubRack();
-        RRU_sub = sampSamp("samp sampBlack", Integer.toString(sfp1.getSubRack()));
-        RRU_slot = sampSamp("samp sampBlack", Integer.toString(sfp1.getSlot()));
-        RRU_port = sampSamp("samp sampBlack", Integer.toString(sfp1.getPort()));
-        RRU_MN = sampDataTooltip("Manufacturer name", sampSamp("samp sampPurple", sfp1.getSfpManufacturerName()));
-        RRU_WL = sampSamp("samp sampBlue", Integer.toString(sfp1.getSfpWaveLength()));
+        String sfp_MN1 = sampDataTooltip("Manufacturer name", sampSamp("samp sampPurple", sfp1.getSfpManufacturerName()));
+        String sfp_WL1 = sampSamp("samp sampBlue", Integer.toString(sfp1.getSfpWaveLength()));
 
         return new HtmlBuilder().sfp_info_content(
-                BBU_sideSubRack,
-                BBU_sub,
-                BBU_slot,
-                BBU_port,
-                BBU_MN,
+                sfp_sideSubRack0,
+                sfp_sub0,
+                sfp_slot0,
+                sfp_port0,
+                sfp_MN0,
                 TCR,
                 s0,
                 mode0,
-                BBU_WL,
-                RRU_sideSubRack,
-                RRU_sub,
-                RRU_slot,
-                RRU_port,
-                RRU_MN,
+                sfp_WL0,
+                sfp_sideSubRack1,
+                sfp_sub1,
+                sfp_slot1,
+                sfp_port1,
+                sfp_MN1,
                 s1,
                 mode1,
-                RRU_WL
+                sfp_WL1
         );
     }
 
-    private String trx_selector(boolean b0, double difference) {
+    private String trx_selector(boolean b0) {
+
+        double difference = b0 ? difference1 : difference2;
 
         if (difference >= 3.9 && difference <= 3.99 || difference >= 4)
             if (difference >= 4) {
@@ -226,21 +201,19 @@ public class Result {
         }
     }
 
+    private String details_summary() {
 
-    public String details_summary(SFP sfp0, SFP sfp1, Double diff0, Double diff1) {
-
-        String diff, speed, mode;
-        boolean ws0 = true, ws1 = true, ws2 = true;
-
-        if (diff0 >= 3.9 && diff0 <= 3.99 || diff0 >= 4) {
-            diff = diff0 >= 4 ? warningRed : warningYellow;
-        } else if (diff1 >= 3.9 && diff1 <= 3.99 || diff1 >= 4) {
-            diff = diff1 >= 4 ? warningRed : warningYellow;
+        String diff;
+        if (difference1 >= 3.9 && difference1 <= 3.99 || difference1 >= 4) {
+            diff = difference1 >= 4 ? warningRed : warningYellow;
+        } else if (difference2 >= 3.9 && difference2 <= 3.99 || difference2 >= 4) {
+            diff = difference2 >= 4 ? warningRed : warningYellow;
         } else {
             ws0 = false;
             diff = warningGreen;
         }
 
+        String speed;
         if (sfp0.getSfpSpeed() != sfp1.getSfpSpeed()) {
             speed = warningRed;
         } else {
@@ -248,6 +221,7 @@ public class Result {
             speed = warningGreen;
         }
 
+        String mode;
         if (sfp0.getSfpMode().equals(SM) && sfp1.getSfpMode().equals(MM) ||
                 sfp0.getSfpMode().equals(MM) && sfp1.getSfpMode().equals(SM)) {
             mode = warningYellow;
@@ -261,44 +235,28 @@ public class Result {
 
         warningSignal = ws0 || ws1 || ws2;
 
-        String
-                BBU_sideSubRack,
-                BBU_sub,
-                BBU_slot,
-                BBU_port,
-                RRU_sideSubRack,
-                RRU_sub,
-                RRU_slot,
-                RRU_port,
-                sector;
+        sfp_sideSubRack0 = sfp0.getSideSubRack();
+        sfp_sub0 = sampSamp("samp sampBlack", Integer.toString(sfp0.getSubRack()));
+        sfp_slot0 = sampSamp("samp sampBlack", Integer.toString(sfp0.getSlot()));
+        sfp_port0 = sampSamp("samp sampBlack", Integer.toString(sfp0.getPort()));
 
-        BBU_sideSubRack = sfp0.getSideSubRack();
-        BBU_sub= sampSamp("samp sampBlack", Integer.toString(sfp0.getSubRack()));
-        BBU_slot = sampSamp("samp sampBlack", Integer.toString(sfp0.getSlot()));
-        BBU_port = sampSamp("samp sampBlack", Integer.toString(sfp0.getPort()));
+        sfp_sideSubRack1 = sfp1.getSideSubRack();
+        sfp_sub1 = sampSamp("samp sampBlack", Integer.toString(sfp1.getSubRack()));
+        sfp_slot1 = sampSamp("samp sampBlack", Integer.toString(sfp1.getSlot()));
+        sfp_port1 = sampSamp("samp sampBlack", Integer.toString(sfp1.getPort()));
 
-        RRU_sideSubRack = sfp1.getSideSubRack();
-        RRU_sub= sampSamp("samp sampBlack", Integer.toString(sfp1.getSubRack()));
-        RRU_slot = sampSamp("samp sampBlack", Integer.toString(sfp1.getSlot()));
-        RRU_port = sampSamp("samp sampBlack", Integer.toString(sfp1.getPort()));
+        String sector;
         if (sfp1.getSubRack() > 0) {
             sector = sector_selector(sfp1.getSubRack());
         } else {
             sector = sector_selector(sfp0.getSubRack());
         }
-        return new HtmlBuilder().summary_content(
-                BBU_sideSubRack,
-                BBU_sub,
-                BBU_slot,
-                BBU_port,
-                RRU_sideSubRack,
-                RRU_sub,
-                RRU_slot,
-                RRU_port,
-                sector, diff, speed, mode);
+
+        return new HtmlBuilder().summary_content(sfp_sideSubRack0, sfp_sub0, sfp_slot0, sfp_port0, sfp_sideSubRack1,
+                sfp_sub1, sfp_slot1, sfp_port1, sector, diff, speed, mode);
     }
 
-    private String sector_selector(int i) {
+    private @NotNull String sector_selector(int i) {
 
         String sc;
         int ic = i - ((i / 10) * 10);
@@ -330,7 +288,7 @@ public class Result {
         }
     }
 
-    private String samp_selector(boolean b0, boolean b1, boolean b2) {
+    private @NotNull String samp_selector(boolean b0, boolean b1, boolean b2) {
 
         double difference = b0 ? difference1 : difference2;
 
@@ -345,13 +303,13 @@ public class Result {
         }
     }
 
-
-    private String sampSamp(String css_class, String s) {
+    @Contract(pure = true)
+    private @NotNull String sampSamp(String css_class, String s) {
         return "<samp class=\"" + css_class + "\">" + s + "</samp>";
     }
 
-
-    private String sampDataTooltip(String s0, String s1) {
+    @Contract(pure = true)
+    private @NotNull String sampDataTooltip(String s0, String s1) {
         return "<samp data-tooltip=\"" + s0 + "\">" + s1 + "</samp>";
     }
 }

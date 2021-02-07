@@ -6,9 +6,7 @@ public abstract class BTS {
     Integer subRack;
     Integer slot;
 
-    public BTS(String btsName,
-               int subRack,
-               int slot) {
+    public BTS(String btsName, int subRack, int slot) {
         this.btsName = btsName;
         this.subRack = subRack;
         this.slot = slot;
